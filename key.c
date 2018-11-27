@@ -337,6 +337,18 @@ int bit_l(unsigned char k, int i)
 {
     return (k >> (B - 1 - i % B)) & 1;
 }
+
+typedef struct {
+    Key sum;
+    unsigned char character;
+    int level;
+} ItemPilha;
+
+typedef struct{
+    ItemPilha pilha[C];
+    int tam;
+} Pilha;
+
 void novo_(Key encrypted, Key T[N])
 {
     Key k;
