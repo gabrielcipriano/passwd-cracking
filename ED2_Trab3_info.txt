@@ -1,0 +1,93 @@
+/******************************************************************************
+ *  Relatório do Trabalho 3 -- ED2 -- 2018/2
+ *  Password Cracking
+ *****************************************************************************/
+
+Nome 1: Igor Sunderhus e Silva
+Nome 2:
+SO utilizado: Bash on Ubuntu 16.04 - Windows 10 1709
+Versão do compilador utilizado: gcc version 5.4.0
+Editor(es) de código utilizado(s): Visual Studio Code 
+Número de horas gastas para fazer o trabalho (aproximado): Dia 1: 1 hora; Dia 2: 3
+
+/******************************************************************************
+ *  Se você usou o arquivo key.c, descreva qualquer modificação/otimização que
+ *  você tenha feito no código. Se você não utilizou key.c, descreva a
+ *  estrutura de dados que você utilizou para manipular as senhas.
+ *****************************************************************************/
+
+
+/******************************************************************************
+ *  Descreva a sua solução força bruta (brute.c) .
+ *****************************************************************************/
+
+
+/******************************************************************************
+ *  Faça uma descrição de alto nível do seu programa de quebra de senha
+ *  (decrypt.c).
+ *****************************************************************************/
+
+
+/******************************************************************************
+ *  Descreva a implementação da tabela de símbolos que você utilizou em
+ *  decrypt.c .
+ *****************************************************************************/
+
+
+/******************************************************************************
+ *  Liste abaixo as versões não criptografadas das senhas fornecidas na
+ *  especificação do trabalho. Faça isso SOMENTE se você foi capaz de quebrar
+ *  as senhas usando o SEU código.
+ *****************************************************************************/
+
+8 caracteres         10 caracteres          12 caracteres
+------------         -------------          -------------
+
+
+/******************************************************************************
+ *  Quanto tempo a versão força bruta leva para quebrar as senhas de um dado
+ *  tamanho? Forneça estimativas com um asterisco se o programa levar mais do
+ *  que a sua paciência (por exemplo, um ou dois minutos). Justifique as suas
+ *  estimativas.
+ *****************************************************************************/
+
+Tamanho     Tempo (segundos)
+----------------------------
+ 4
+ 5
+ 6
+ 8
+
+/******************************************************************************
+ *  Quanto tempo decrypt.c leva para quebrar as senhas de um dado tamanho?
+ *  Quanto de memória o programa utiliza? Forneça estimativas com um asterisco
+ *  se o programa levar mais que a sua paciência ou utilizar mais memória que
+ *  o seu sistema possui. Justifique as suas estimativas.
+ *****************************************************************************/
+
+Tamanho    Tempo (segundos)    Memória (bytes)
+----------------------------------------------
+ 6
+ 8
+10
+12
+
+/******************************************************************************
+ *  Quantas operações brute.c faz sobre uma senha com N bits?
+ *  Quantas operações decrypt.c faz sobre uma senha com N bits?
+ *  Utilize a notação de big-Oh nas suas respostas.
+ *****************************************************************************/
+
+
+/******************************************************************************
+ *  Descreva qualquer problema grave que você encontrou ao desenvolver
+ *  o trabalho.
+ *****************************************************************************/
+
+
+/******************************************************************************
+ *  Deixe qualquer outro comentário aqui. Fique à vontade para dar um feedback
+ *  sobre o quanto você acha que aprendeu com esse trabalho, e se você gostou
+ *  de fazê-lo.
+ *****************************************************************************/
+
