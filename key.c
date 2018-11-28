@@ -338,29 +338,30 @@ int bit_l(unsigned char k, int i)
     return (k >> (B - 1 - i % B)) & 1;
 }
 
-typedef struct {
+typedef struct
+{
     Key sum;
     unsigned char character;
     int level;
 } ItemPilha;
 
-typedef struct{
+typedef struct
+{
     ItemPilha pilha[C];
     int tam;
 } Pilha;
 
+Pilha *init_pilha()
+{
+    Pilha *p = malloc(sizeof(*p));
+    p->tam = -1;
+    return p;
+}
+
 void novo_(Key encrypted, Key T[N])
 {
-    Key k;
-    Key a;
-    for (int i = 0; i < C; i++)
-    {
-        k.digit[i] = 0;
-    }
-    for (int i = 0; i < C; i++)
-    {
-        a.digit[i] = 0;
-    }
+    Key k = {{0}};
+    Key a = {{0}};
     // Senha para incrementar 1
 
     a.digit[C - 1] = 1;
@@ -369,16 +370,12 @@ void novo_(Key encrypted, Key T[N])
     //Key ***lista = malloc(sizeof(*lista) * R);
 
     Key lista[R][C];
-    for (int l = 1; l < R; l++)
+    for (int l = 0; l < R; l++)
     {
         for (int p = 0; p <= C; p++)
         {
 
-            Key sum;
-            for (int z = 0; z < C; z++)
-            {
-                k.digit[z] = 0;
-            }
+            Key sum = {{0}};
             for (int b = 0; b < B; b++)
             {
                 int bitt = bit_l(l, b);
@@ -388,19 +385,22 @@ void novo_(Key encrypted, Key T[N])
                 }
             }
 
-            lista[l][p] = sum;
-            print_key(lista[l][p]);
+            lista[l][p] = sum; 
         }
     }
+    Pilha p;
+    p.tam = -1;
     for (double i = 0; i < tam; i++)
     {
 
-        Key passwordEncrypted = lista[(k.digit[0])][0];
-        for (int j = 1; j < C; j++)
+        Key passwordEncrypted = {{0}};
+        for (int j = 0; j < C; j++)
         {
             //Key *temp = (lista[k.digit[j]][j]);
-            passwordEncrypted = add(passwordEncrypted, lista[k.digit[j]][j]);
+            if (k.digit[j] != 0)
+                passwordEncrypted = add(passwordEncrypted, lista[k.digit[j]][j]);
         }
+
         if (equal(encrypted, passwordEncrypted))
         {
             print_key_char(k);
