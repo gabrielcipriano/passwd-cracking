@@ -342,7 +342,7 @@ unsigned char ST_floor(Node *root, unsigned char key)
     Node *n = rec_floor(root, key);
     if (n == NULL)
     {
-        return NULL_Key;
+        return R+1;
     }
     else
     {
@@ -381,7 +381,7 @@ unsigned char ST_ceiling(Node *root, unsigned char key)
     Node *n = rec_ceiling(root, key);
     if (n == NULL)
     {
-        return NULL_Key;
+        return R+1;
     }
     else
     {

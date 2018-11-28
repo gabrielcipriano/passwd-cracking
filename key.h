@@ -3,7 +3,7 @@
 #ifndef KEY_H
 #define KEY_H
 
-#define C 6        // Número de caracteres na senha.
+#define C 5        // Número de caracteres na senha.
 #define B 5        // Número de bits por caractere.
 #define R (1 << B) // Tamanho do alfabeto (sempre = 32).
 #define N (B * C)  // Número de bits por senha.
@@ -20,6 +20,7 @@ typedef struct
 
 typedef Key Value;
 
+static const Key NULL_Value = {{R + 1}};
 
 // Inicializa e retorna uma chave a partir do vetor de char dado.
 // Exemplo: s = "abcdwxyz"  =>  k = 0 1 2 3 22 23 24 25

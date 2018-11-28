@@ -3,7 +3,7 @@ enc:
 	gcc -Wall key.c encrypt.c -o encrypt -g
 	
 dec:
-	gcc -Wall key.c decrypt.c -o decrypt -g
+	gcc -Wall BST3.c key.c decrypt.c -o decrypt -g
 
 brute:
 	gcc -Wall key.c brute.c -o brute -g

@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <time.h>
+#include "ST.h"
 // Inicializa e retorna uma chave a partir do vetor de char dado.
 // Exemplo: s = "abcdwxyz"  =>  k = 0 1 2 3 22 23 24 25
 Key init_key(unsigned char s[])
@@ -81,6 +82,8 @@ Key add(Key a, Key b)
     }
     return c;
 }
+
+
 
 // Soma (módulo 2^N) e retorna o subconjunto dos inteiros T[i] que
 // são indexados pelos bits de k.
@@ -188,7 +191,7 @@ void dec_forca_bruta(Key encrypted, Key T[N])
 
 void dec_symbol_table_new(Key encrypted, Key T[N])
 {
-    /*  Key k = {{0}};
+    Key k = {{0}};
     Key a = {{0}};
 
     // Senha para incrementar 1
@@ -198,7 +201,7 @@ void dec_symbol_table_new(Key encrypted, Key T[N])
     // Quantidade de combinações
     double tam = pow(R, C);
     Node *root = ST_init();
-    root = ST_put(root, NULL_Key, NULL_Value);
+    root = ST_put(root, R + 1, NULL_Value);
     for (double i = 0; i < tam; i++)
     {
         Value passwordEncrypted = subset_sum_tree(k, T, root);
@@ -208,7 +211,7 @@ void dec_symbol_table_new(Key encrypted, Key T[N])
         }
         k = add(k, a);
     }
-    ST_finish(root);*/
+    ST_finish(root);
 }
 
 void dec_symbol_table(Key encrypted, Key T[N])
@@ -279,17 +282,14 @@ void dec_symbol_table(Key encrypted, Key T[N])
 
     //ST_finish(root);
 }
-
-/*void teste_symbol_table_rec(Key encrypted, Key map[N], Key sum_atual, Key prefix, int pos, Node *root)
+#include <unistd.h>
+void teste_symbol_table_rec(Key encrypted, Key sum_atual, Key prefix, int pos, Key lista[R][C], Key sum_anterior)
 {
     // Base case: pos is 0,
     // print prefix
     if (pos == C)
     {
-         if(equal(prefix, init_key("passw"))){
-            
-            print_key_char(prefix);
-        }
+
         // Key passwordEncrypted = subset_sum(prefix, map);
         if (equal(encrypted, sum_atual))
         {
@@ -306,56 +306,61 @@ void dec_symbol_table(Key encrypted, Key T[N])
 
         // Next character of input added
         prefix.digit[pos] = i;
-
-        int ini = ((pos * (B - 1)) + B);
-        for (int j = ini; j < N; j++)
+        if (i != 0)
         {
-            if (bit(prefix, j))
-            {
-                sum_atual = add(sum_atual, map[j]);
-                // printf("%2d ", i); // Para teste.
-                // print_key(T[i]);   // Para teste.
-            }
+            printf("before\n");
+            print_key(prefix);
+            print_key(sum_atual);
+            printf("\n");
+            Key temp = add(sum_anterior, lista[i][pos]);
+            sum_anterior = sum_atual;
+            sum_atual = temp;
+            printf("after\n");
+            print_key(prefix);
+            print_key(sum_atual);
+            printf("\n");
+            sleep(1);
         }
+
+        // printf("%2d ", i); // Para teste.
+        // print_key(T[i]);   // Para teste.
 
         // k is increased, because
         // we have added a new character
-        teste_symbol_table_rec(encrypted, map, sum_atual, prefix, pos + 1, root);
+        teste_symbol_table_rec(encrypted, sum_atual, prefix, pos + 1, lista, sum_anterior);
     }
-}*/
+}
 
 void teste_symbol_table(Key encrypted, Key T[N])
 {
 
-    /* static Key pass;
-    static Key sum_atual;
-    Node *root = ST_init();
-    teste_symbol_table_rec(encrypted, T, sum_atual, pass, 0, root);*/
+    Key pass = {{0}};
+    static Key sum_atual = {{0}};
+    Key lista[R][C];
+    for (int l = 0; l < R; l++)
+    {
+        for (int p = 0; p <= C; p++)
+        {
+
+            Key sum = {{0}};
+            for (int b = 0; b < B; b++)
+            {
+                int bitt = bit_l(l, b);
+                if (bitt)
+                {
+                    sum = add(sum, T[b + (p * B)]);
+                }
+            }
+
+            lista[l][p] = sum;
+        }
+    }
+    teste_symbol_table_rec(encrypted, sum_atual, pass, 0, lista, sum_atual);
 }
 
 int bit_l(unsigned char k, int i)
 {
     return (k >> (B - 1 - i % B)) & 1;
-}
-
-typedef struct
-{
-    Key sum;
-    unsigned char character;
-    int level;
-} ItemPilha;
-
-typedef struct
-{
-    ItemPilha pilha[C];
-    int tam;
-} Pilha;
-
-Pilha *init_pilha()
-{
-    Pilha *p = malloc(sizeof(*p));
-    p->tam = -1;
-    return p;
 }
 
 void novo_(Key encrypted, Key T[N])
@@ -385,11 +390,11 @@ void novo_(Key encrypted, Key T[N])
                 }
             }
 
-            lista[l][p] = sum; 
+            lista[l][p] = sum;
         }
     }
-    Pilha p;
-    p.tam = -1;
+
+    
     for (double i = 0; i < tam; i++)
     {
 
