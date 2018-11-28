@@ -379,7 +379,6 @@ int bit_l(unsigned char k, int i)
 {
     return (k >> (B - 1 - i % B)) & 1;
 }
-/*
 typedef struct
 {
     Key k;
@@ -411,13 +410,11 @@ void empilha(Pilha *p, Key k, unsigned char c)
     }
 }
 
-ItemPilha desempilha(Pilha *p)
+void desempilha(Pilha *p)
 {
-    if (p->topo > -1)
+    if (p->topo > 0)
     {
-        ItemPilha item = p->pilha[p->topo];
         p->topo--;
-        return item;
     }
 }
 
@@ -430,12 +427,6 @@ ItemPilha olha_topo(Pilha *p)
     }
 }
 
-typedef struct
-{
-    Key pass;
-    Key crypt;
-
-} teste;*/
 void novo_(Key encrypted, Key T[N])
 {
     Key lista[R][C];
@@ -503,31 +494,43 @@ void novo_(Key encrypted, Key T[N])
     Key k = {{0}};
 
     double tam = pow(R, C);
-    Key **lista_Teste = malloc(sizeof(*lista_Teste) * tam);
 
-    for (int l = 0; l < R; l++)
-    {
-        for (int p = 0; p <= C; p++)
-        {
-        }
-    }
+    Pilha *p = Pilha_init();
 
     for (double i = 0; i < tam; i++)
     {
 
         Key passwordEncrypted = {{0}};
-        for (int j = 0; j < C; j++)
+        int j;
+        for (j = 0; j < C; j++)
         {
 
+            ItemPilha top = olha_topo(p);
+
+            if (top.c != k.digit[j] && p->topo == j)
+            {
+                desempilha(p);
+                top = olha_topo(p);
+                empilha(p, add(top.k, lista[k.digit[j]][j]), k.digit[j]);
+            }
+
             //Key *temp = (lista[k.digit[j]][j]);
-            if (k.digit[j] != 0)
-                passwordEncrypted = add(passwordEncrypted, lista[k.digit[j]][j]);
+            /*if (k.digit[j] != 0)
+                passwordEncrypted = add(passwordEncrypted, lista[k.digit[j]][j]);*/
         }
-        // ItemPilha top = olha_topo(p);
+        while (j < C)
+        {
+            ItemPilha top = olha_topo(p);
+            empilha(p, add(top.k, lista[k.digit[j]][j]), k.digit[j]);
+            j++;
+        }
+        ItemPilha top = olha_topo(p);
+        passwordEncrypted = top.k;
         if (equal(encrypted, passwordEncrypted))
         {
             print_key_char(k);
         }
         k = add1(k);
     }
+    free(p);
 }
