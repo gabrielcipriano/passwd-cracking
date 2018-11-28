@@ -302,7 +302,7 @@ void teste_symbol_table_rec(Key encrypted, Key sum_atual, Key prefix, int pos, K
 {
     // Base case: pos is 0,
     // print prefix
-    if (pos == 0)
+    if (pos == C)
     {
 
         // Key passwordEncrypted = subset_sum(prefix, map);
@@ -320,18 +320,18 @@ void teste_symbol_table_rec(Key encrypted, Key sum_atual, Key prefix, int pos, K
     {
 
         // Next character of input added
-        prefix.digit[pos - 1] = i;
+        prefix.digit[pos] = i;
         if (i != 0)
         {
-            printf("before\n");
+            printf("\npos: %d\n", pos);
             print_key(prefix);
+            printf("before\n");
             print_key(sum_atual);
             printf("\n");
-            Key temp = add(sum_anterior, lista[i][pos - 1]);
-            sum_anterior = sum_atual;
-            sum_atual = temp;
+
+            sum_atual = add(sum_anterior, lista[i][pos]);
+
             printf("after\n");
-            print_key(prefix);
             print_key(sum_atual);
             printf("\n");
             sleep(1);
@@ -342,8 +342,9 @@ void teste_symbol_table_rec(Key encrypted, Key sum_atual, Key prefix, int pos, K
 
         // k is increased, because
         // we have added a new character
-        teste_symbol_table_rec(encrypted, sum_atual, prefix, pos - 1, lista, sum_anterior);
+        teste_symbol_table_rec(encrypted, sum_atual, prefix, pos + 1, lista, sum_anterior);
     }
+    sum_anterior = sum_atual;
 }
 
 void teste_symbol_table(Key encrypted, Key T[N])
@@ -358,26 +359,27 @@ void teste_symbol_table(Key encrypted, Key T[N])
         {
 
             Key sum = {{0}};
-            for (int b = 0; b < B; b++)
-            {
-                int bitt = bit_l(l, b);
-                if (bitt)
+            if (l != 0)
+                for (int b = 0; b < B; b++)
                 {
-                    sum = add(sum, T[b + (p * B)]);
+                    int bitt = bit_l(l, b);
+                    if (bitt)
+                    {
+                        sum = add(sum, T[b + (p * B)]);
+                    }
                 }
-            }
 
             lista[l][p] = sum;
         }
     }
-    teste_symbol_table_rec(encrypted, sum_atual, pass, C, lista, sum_atual);
+    teste_symbol_table_rec(encrypted, sum_atual, pass, 0, lista, sum_atual);
 }
 
 int bit_l(unsigned char k, int i)
 {
     return (k >> (B - 1 - i % B)) & 1;
 }
-
+/*
 typedef struct
 {
     Key k;
@@ -428,6 +430,12 @@ ItemPilha olha_topo(Pilha *p)
     }
 }
 
+typedef struct
+{
+    Key pass;
+    Key crypt;
+
+} teste;*/
 void novo_(Key encrypted, Key T[N])
 {
     Key lista[R][C];
@@ -450,7 +458,7 @@ void novo_(Key encrypted, Key T[N])
         }
     }
 
- /*   Pilha *p = Pilha_init();
+    /*   Pilha *p = Pilha_init();
 
     for (int i = 0; i < R; i++)
     {
@@ -492,9 +500,18 @@ void novo_(Key encrypted, Key T[N])
 
     free(p);*/
 
-     Key k = {{0}};
+    Key k = {{0}};
 
     double tam = pow(R, C);
+    Key **lista_Teste = malloc(sizeof(*lista_Teste) * tam);
+
+    for (int l = 0; l < R; l++)
+    {
+        for (int p = 0; p <= C; p++)
+        {
+        }
+    }
+
     for (double i = 0; i < tam; i++)
     {
 

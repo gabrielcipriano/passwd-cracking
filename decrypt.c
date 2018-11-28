@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     }
     // Força bruta
     clock_t tic = clock();
-    novo_(encrypted, T);
+    teste_symbol_table(encrypted, T);
     clock_t toc = clock();
 
     printf("Tempo: %.3f segundos\n", (double)(toc - tic) / CLOCKS_PER_SEC);
