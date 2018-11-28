@@ -1,6 +1,6 @@
 
 enc:
-	gcc -Wall key.c encrypt.c -o encrypt -g
+	gcc -Wall BST3.c key.c encrypt.c -o encrypt -g
 	
 dec:
 	gcc -Wall BST3.c key.c decrypt.c -o decrypt -g

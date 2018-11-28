@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <time.h>
-#include "ST.h"
+#include "st.h"
 // Inicializa e retorna uma chave a partir do vetor de char dado.
 // Exemplo: s = "abcdwxyz"  =>  k = 0 1 2 3 22 23 24 25
 Key init_key(unsigned char s[])
@@ -82,8 +82,23 @@ Key add(Key a, Key b)
     }
     return c;
 }
+Key add1(Key a)
+{
+    int sum = a.digit[C - 1] + 1;
 
+    a.digit[C - 1] = sum % R;
+    int carry = sum >= R;
+    int i = C - 2;
+    while (i >= 0 && carry != 0)
+    {
+        sum = a.digit[i] + carry;
+        a.digit[i] = sum % R;
+        carry = sum >= R;
+        i--;
+    }
 
+    return a;
+}
 
 // Soma (módulo 2^N) e retorna o subconjunto dos inteiros T[i] que
 // são indexados pelos bits de k.
@@ -287,7 +302,7 @@ void teste_symbol_table_rec(Key encrypted, Key sum_atual, Key prefix, int pos, K
 {
     // Base case: pos is 0,
     // print prefix
-    if (pos == C)
+    if (pos == 0)
     {
 
         // Key passwordEncrypted = subset_sum(prefix, map);
@@ -305,14 +320,14 @@ void teste_symbol_table_rec(Key encrypted, Key sum_atual, Key prefix, int pos, K
     {
 
         // Next character of input added
-        prefix.digit[pos] = i;
+        prefix.digit[pos - 1] = i;
         if (i != 0)
         {
             printf("before\n");
             print_key(prefix);
             print_key(sum_atual);
             printf("\n");
-            Key temp = add(sum_anterior, lista[i][pos]);
+            Key temp = add(sum_anterior, lista[i][pos - 1]);
             sum_anterior = sum_atual;
             sum_atual = temp;
             printf("after\n");
@@ -327,7 +342,7 @@ void teste_symbol_table_rec(Key encrypted, Key sum_atual, Key prefix, int pos, K
 
         // k is increased, because
         // we have added a new character
-        teste_symbol_table_rec(encrypted, sum_atual, prefix, pos + 1, lista, sum_anterior);
+        teste_symbol_table_rec(encrypted, sum_atual, prefix, pos - 1, lista, sum_anterior);
     }
 }
 
@@ -355,7 +370,7 @@ void teste_symbol_table(Key encrypted, Key T[N])
             lista[l][p] = sum;
         }
     }
-    teste_symbol_table_rec(encrypted, sum_atual, pass, 0, lista, sum_atual);
+    teste_symbol_table_rec(encrypted, sum_atual, pass, C, lista, sum_atual);
 }
 
 int bit_l(unsigned char k, int i)
@@ -363,17 +378,58 @@ int bit_l(unsigned char k, int i)
     return (k >> (B - 1 - i % B)) & 1;
 }
 
+typedef struct
+{
+    Key k;
+    unsigned char c;
+
+} ItemPilha;
+
+typedef struct
+{
+    ItemPilha pilha[C];
+    int topo;
+} Pilha;
+
+Pilha *Pilha_init()
+{
+    Pilha *p = malloc(sizeof(*p));
+    p->topo = -1;
+    return p;
+}
+
+void empilha(Pilha *p, Key k, unsigned char c)
+{
+
+    if (p->topo < C - 1)
+    {
+        p->topo++;
+        p->pilha[p->topo].k = k;
+        p->pilha[p->topo].c = c;
+    }
+}
+
+ItemPilha desempilha(Pilha *p)
+{
+    if (p->topo > -1)
+    {
+        ItemPilha item = p->pilha[p->topo];
+        p->topo--;
+        return item;
+    }
+}
+
+ItemPilha olha_topo(Pilha *p)
+{
+    if (p->topo > -1)
+    {
+        ItemPilha item = p->pilha[p->topo];
+        return item;
+    }
+}
+
 void novo_(Key encrypted, Key T[N])
 {
-    Key k = {{0}};
-    Key a = {{0}};
-    // Senha para incrementar 1
-
-    a.digit[C - 1] = 1;
-    double tam = pow(R, C);
-
-    //Key ***lista = malloc(sizeof(*lista) * R);
-
     Key lista[R][C];
     for (int l = 0; l < R; l++)
     {
@@ -394,22 +450,67 @@ void novo_(Key encrypted, Key T[N])
         }
     }
 
-    
+ /*   Pilha *p = Pilha_init();
+
+    for (int i = 0; i < R; i++)
+    {
+        empilha(p, lista[i][0], i);
+        for (int j = 0; j < R; j++)
+        {
+
+            empilha(p, add(olha_topo(p).k, lista[j][1]), j);
+            for (int k = 0; k < R; k++)
+            {
+                empilha(p, add(olha_topo(p).k, lista[k][2]), k);
+                for (int l = 0; l < R; l++)
+                {
+                    empilha(p, add(olha_topo(p).k, lista[l][3]),l);
+                    for (int m = 0; m < R; m++)
+                    {
+                        ItemPilha item = olha_topo(p);
+
+                        if (equal(encrypted, add(item.k, lista[m][4])))
+                        {
+                            printf("%c", ALPHABET[i]);
+                            printf("%c", ALPHABET[j]);
+                            printf("%c", ALPHABET[k]);
+                            printf("%c", ALPHABET[l]);
+                            printf("%c", ALPHABET[m]);
+                            printf("\n");
+                        }
+                    }
+                    desempilha(p);
+                }
+                desempilha(p);
+            }
+
+            desempilha(p);
+        }
+
+        desempilha(p);
+    }
+
+    free(p);*/
+
+     Key k = {{0}};
+
+    double tam = pow(R, C);
     for (double i = 0; i < tam; i++)
     {
 
         Key passwordEncrypted = {{0}};
         for (int j = 0; j < C; j++)
         {
+
             //Key *temp = (lista[k.digit[j]][j]);
             if (k.digit[j] != 0)
                 passwordEncrypted = add(passwordEncrypted, lista[k.digit[j]][j]);
         }
-
+        // ItemPilha top = olha_topo(p);
         if (equal(encrypted, passwordEncrypted))
         {
             print_key_char(k);
         }
-        k = add(k, a);
+        k = add1(k);
     }
 }

@@ -13,7 +13,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "key.h"
-#include "ST.h"
 
 int main(int argc, char *argv[])
 {
@@ -48,8 +47,16 @@ int main(int argc, char *argv[])
     printf("\n   ");
     print_key(encrypted);
     printf("\n");
+    printf("\n");
+    printf("\n");
+    printf("\n");
 
-    Key lista[R][C];
+    print_key(init_key("aaba"));
+    print_key(init_key("aaab"));
+    print_key(add(init_key("aaba"), init_key("aaab")));
+    print_key(add1(init_key("aaba")));
+
+    /* Key lista[R][C];
     for (int l = 0; l < R; l++)
     {
         for (int p = 0; p <= C; p++)
@@ -85,6 +92,6 @@ int main(int argc, char *argv[])
 
     printf("\n");
     print_key(teste);
-    printf("\n");
+    printf("\n");*/
     return 0;
 }

@@ -38,6 +38,7 @@ int bit_l(unsigned char k, int i);
 
 // Retorna a + b (mod 2^N) .
 Key add(Key a, Key b);
+ Key add1(Key a);
 
 // Soma (módulo 2^N) e retorna o subconjunto dos inteiros T[i] que
 // são indexados pelos bits de k.
