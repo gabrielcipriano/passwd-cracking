@@ -412,7 +412,7 @@ void empilha(Pilha *p, Key k, unsigned char c)
 
 void desempilha(Pilha *p)
 {
-    if (p->topo > 0)
+    if (p->topo > -1)
     {
         p->topo--;
     }
@@ -496,6 +496,7 @@ void novo_(Key encrypted, Key T[N])
     double tam = pow(R, C);
 
     Pilha *p = Pilha_init();
+    p->topo = C - 1;
 
     for (double i = 0; i < tam; i++)
     {
@@ -506,7 +507,7 @@ void novo_(Key encrypted, Key T[N])
         {
 
             ItemPilha top = olha_topo(p);
-
+            
             if (top.c != k.digit[j] && p->topo == j)
             {
                 desempilha(p);
