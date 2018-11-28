@@ -83,8 +83,6 @@ Key add(Key a, Key b)
     return c;
 }
 
-
-
 // Soma (módulo 2^N) e retorna o subconjunto dos inteiros T[i] que
 // são indexados pelos bits de k.
 Key subset_sum(Key k, Key T[N])
@@ -287,7 +285,7 @@ void teste_symbol_table_rec(Key encrypted, Key sum_atual, Key prefix, int pos, K
 {
     // Base case: pos is 0,
     // print prefix
-    if (pos == C)
+    if (pos == 0)
     {
 
         // Key passwordEncrypted = subset_sum(prefix, map);
@@ -305,14 +303,14 @@ void teste_symbol_table_rec(Key encrypted, Key sum_atual, Key prefix, int pos, K
     {
 
         // Next character of input added
-        prefix.digit[pos] = i;
+        prefix.digit[pos - 1] = i;
         if (i != 0)
         {
             printf("before\n");
             print_key(prefix);
             print_key(sum_atual);
             printf("\n");
-            Key temp = add(sum_anterior, lista[i][pos]);
+            Key temp = add(sum_anterior, lista[i][pos - 1]);
             sum_anterior = sum_atual;
             sum_atual = temp;
             printf("after\n");
@@ -327,7 +325,7 @@ void teste_symbol_table_rec(Key encrypted, Key sum_atual, Key prefix, int pos, K
 
         // k is increased, because
         // we have added a new character
-        teste_symbol_table_rec(encrypted, sum_atual, prefix, pos + 1, lista, sum_anterior);
+        teste_symbol_table_rec(encrypted, sum_atual, prefix, pos - 1, lista, sum_anterior);
     }
 }
 
@@ -355,7 +353,7 @@ void teste_symbol_table(Key encrypted, Key T[N])
             lista[l][p] = sum;
         }
     }
-    teste_symbol_table_rec(encrypted, sum_atual, pass, 0, lista, sum_atual);
+    teste_symbol_table_rec(encrypted, sum_atual, pass, C, lista, sum_atual);
 }
 
 int bit_l(unsigned char k, int i)
@@ -365,7 +363,7 @@ int bit_l(unsigned char k, int i)
 
 void novo_(Key encrypted, Key T[N])
 {
-    Key k = {{0}};
+    // Key k = {{0}};
     Key a = {{0}};
     // Senha para incrementar 1
 
@@ -394,8 +392,43 @@ void novo_(Key encrypted, Key T[N])
         }
     }
 
-    
-    for (double i = 0; i < tam; i++)
+    for (int i = 0; i < R; i++)
+    {
+        Key sum1 = lista[i][0];
+        for (int j = 0; j < R; j++)
+        {
+            Key sum2 = add(sum1, lista[j][1]);
+            for (int k = 0; k < R; k++)
+            {
+                Key sum3 = add(sum2, lista[k][2]);
+                for (int l = 0; l < R; l++)
+                {
+                    Key sum4 = add(sum3, lista[l][3]);
+                    for (int m = 0; m < R; m++)
+                    {
+                        Key sum5 = add(sum4, lista[m][4]);
+
+                        for (int n = 0; n < R; n++)
+                        {
+                            Key sum6 = add(sum5, lista[n][5]);
+                            if (equal(encrypted, sum6))
+                            {
+                                printf("%c", ALPHABET[i]);
+                                printf("%c", ALPHABET[j]);
+                                printf("%c", ALPHABET[k]);
+                                printf("%c", ALPHABET[l]);
+                                printf("%c", ALPHABET[m]);
+                                printf("%c", ALPHABET[n]);
+                                printf("\n");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /* for (double i = 0; i < tam; i++)
     {
 
         Key passwordEncrypted = {{0}};
@@ -411,5 +444,5 @@ void novo_(Key encrypted, Key T[N])
             print_key_char(k);
         }
         k = add(k, a);
-    }
+    }*/
 }
