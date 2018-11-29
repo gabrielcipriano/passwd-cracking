@@ -337,14 +337,14 @@ void print_pilha(Pilha *p)
     }
     printf("\n\n");
 }
-void empilha(Pilha *p, Key k, unsigned char c)
+Pilha empilha(Pilha p, Key k, unsigned char c)
 {
 
-    Key temp = add(p->pilha[p->topo], k);
-    p->topo++;
-    p->pilha[p->topo] = temp;
+    Key temp = add(p.pilha[p.topo], k);
+    p.topo++;
+    p.pilha[p.topo] = temp;
 
- 
+    return p;
 }
 
 void desempilha(Pilha *p)
@@ -386,7 +386,7 @@ void teste_symbol_table_rec(Key encrypted, Key prefix, int pos, Key lista[R][C],
         // printf("%d\n", p.topo);
 
         // print_key(p.pilha[p.topo]);
-        empilha(&p, lista[i][pos], i);
+        Pilha nova = empilha(p, lista[i][pos], i);
         // if (ALPHABET[i] == 'p' && pos == 0)
         // {
 
@@ -428,16 +428,9 @@ void teste_symbol_table_rec(Key encrypted, Key prefix, int pos, Key lista[R][C],
 
         // k is increased, because
         // we have added a new character
-        teste_symbol_table_rec(encrypted, prefix, pos + 1, lista, p);
+        teste_symbol_table_rec(encrypted, prefix, pos + 1, lista, nova);
         // printf("desempilhando %d\n", pos);
         // printf("%d\n", p.topo);
-        while (p.topo > pos)
-        {
-            p.topo--;
-            // printf("%d\n", p.topo);
-            // print_pilha(&p);
-            // sleep(1);
-        }
     }
 }
 
@@ -570,7 +563,6 @@ void novo_(Key encrypted, Key T[N])
         // ItemPilha top = olha_topo(p);
         // passwordEncrypted = top.k;
 
-    
         if (equal(encrypted, passwordEncrypted))
         {
             print_key_char(k);
