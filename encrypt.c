@@ -14,6 +14,23 @@
 #include <stdio.h>
 #include "key.h"
 
+typedef struct
+{
+    Key pilha[C];
+    int topo;
+} pilha_teste;
+
+pilha_teste pilha_init()
+{
+    Key k = {{0}};
+    pilha_teste p;
+    for (int i = 0; i < C; i++)
+    {
+        p.pilha[i] = k;
+    }
+    p.topo = 0;
+    return p;
+}
 int main(int argc, char *argv[])
 {
     Key password;  // A senha fornecida pelo usuário.
@@ -47,51 +64,7 @@ int main(int argc, char *argv[])
     printf("\n   ");
     print_key(encrypted);
     printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
 
-    print_key(init_key("aaba"));
-    print_key(init_key("aaab"));
-    print_key(add(init_key("aaba"), init_key("aaab")));
-    print_key(add1(init_key("aaba")));
 
-    /* Key lista[R][C];
-    for (int l = 0; l < R; l++)
-    {
-        for (int p = 0; p <= C; p++)
-        {
-
-            Key sum = {{0}};
-            for (int b = 0; b < B; b++)
-            {
-                int bitt = bit_l(l, b);
-                if (bitt)
-                {
-                    sum = add(sum, T[b + (p * B)]);
-                }
-            }
-
-            lista[l][p] = sum;
-        }
-    }
-
-    Key teste = lista[password.digit[0]][0];
-    printf("letra: %c", ALPHABET[password.digit[0]]);
-    printf("\n");
-    print_key(teste);
-    printf("\n");
-    for (int i = 1; i < C; i++)
-    {
-        teste = add(teste, lista[password.digit[i]][i]);
-        printf("letra: %c", ALPHABET[password.digit[i]]);
-        printf("\n");
-        print_key(teste);
-        printf("\n");
-    }
-
-    printf("\n");
-    print_key(teste);
-    printf("\n");*/
     return 0;
 }

@@ -3,12 +3,12 @@
  *  Password Cracking
  *****************************************************************************/
 
-Nome 1: Igor Sunderhus e Silva
+Nome 1: 
 Nome 2:
 SO utilizado: Bash on Ubuntu 16.04 - Windows 10 1709
 Versão do compilador utilizado: gcc version 5.4.0
 Editor(es) de código utilizado(s): Visual Studio Code 
-Número de horas gastas para fazer o trabalho (aproximado): Dia 1: 1 hora; Dia 2: 3
+Número de horas gastas para fazer o trabalho (aproximado): 15
 
 /******************************************************************************
  *  Se você usou o arquivo key.c, descreva qualquer modificação/otimização que

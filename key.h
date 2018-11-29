@@ -3,7 +3,7 @@
 #ifndef KEY_H
 #define KEY_H
 
-#define C 4        // Número de caracteres na senha.
+#define C 8        // Número de caracteres na senha.
 #define B 5        // Número de bits por caractere.
 #define R (1 << B) // Tamanho do alfabeto (sempre = 32).
 #define N (B * C)  // Número de bits por senha.
@@ -38,7 +38,7 @@ int bit_l(unsigned char k, int i);
 
 // Retorna a + b (mod 2^N) .
 Key add(Key a, Key b);
- Key add1(Key a);
+Key add1(Key a);
 
 // Soma (módulo 2^N) e retorna o subconjunto dos inteiros T[i] que
 // são indexados pelos bits de k.

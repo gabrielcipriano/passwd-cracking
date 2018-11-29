@@ -298,7 +298,66 @@ void dec_symbol_table(Key encrypted, Key T[N])
     //ST_finish(root);
 }
 #include <unistd.h>
-void teste_symbol_table_rec(Key encrypted, Key sum_atual, Key prefix, int pos, Key lista[R][C], Key sum_anterior)
+
+int bit_l(unsigned char k, int i)
+{
+    return (k >> (B - 1 - i % B)) & 1;
+}
+typedef struct
+{
+    Key k;
+    unsigned char c;
+
+} ItemPilha;
+
+typedef struct
+{
+    Key pilha[C + 1];
+    int topo;
+} Pilha;
+
+Pilha Pilha_init()
+{
+    Key k = {{0}};
+    Pilha p;
+    for (int i = 0; i <= C; i++)
+    {
+        p.pilha[i] = k;
+    }
+    p.topo = 0;
+    return p;
+}
+
+void print_pilha(Pilha *p)
+{
+    for (int i = 0; i <= p->topo && i <= C; i++)
+    {
+        printf("i: %d ", i);
+        print_key(p->pilha[i]);
+    }
+    printf("\n\n");
+}
+void empilha(Pilha *p, Key k, unsigned char c)
+{
+
+    Key temp = add(p->pilha[p->topo], k);
+    p->topo++;
+    p->pilha[p->topo] = temp;
+
+ 
+}
+
+void desempilha(Pilha *p)
+{
+    p->topo--;
+}
+
+Key olha_topo(Pilha *p)
+{
+    return p->pilha[p->topo];
+}
+
+void teste_symbol_table_rec(Key encrypted, Key prefix, int pos, Key lista[R][C], Pilha p)
 {
     // Base case: pos is 0,
     // print prefix
@@ -306,7 +365,8 @@ void teste_symbol_table_rec(Key encrypted, Key sum_atual, Key prefix, int pos, K
     {
 
         // Key passwordEncrypted = subset_sum(prefix, map);
-        if (equal(encrypted, sum_atual))
+
+        if (equal(encrypted, olha_topo(&p)))
         {
             print_key_char(prefix);
         }
@@ -321,37 +381,70 @@ void teste_symbol_table_rec(Key encrypted, Key sum_atual, Key prefix, int pos, K
 
         // Next character of input added
         prefix.digit[pos] = i;
-        if (i != 0)
-        {
-            printf("\npos: %d\n", pos);
+        // printf("empilhando letra %c na pos %d\n", ALPHABET[i], pos + 1);
+        // printf("topo: ");
+        // printf("%d\n", p.topo);
+
+        // print_key(p.pilha[p.topo]);
+        empilha(&p, lista[i][pos], i);
+        // if (ALPHABET[i] == 'p' && pos == 0)
+        // {
+
+        //     print_pilha(&p);
+        // }
+        // if (ALPHABET[i] == 'a' && pos == 1)
+        // {
+        //     print_pilha(&p);
+        // }
+        // if (ALPHABET[i] == 's' && pos == 2)
+        // {
+        //     print_pilha(&p);
+        // }
+        // if (ALPHABET[i] == 's' && pos == 3)
+        // {
+        //     print_pilha(&p);
+        // }
+
+        // printf("topo: ");
+        // printf("%d\n", p.topo);
+        // print_key(p.pilha[p.topo]);
+        //sleep(1);
+
+        /* printf("\npos: %d\n", pos);
             print_key(prefix);
             printf("before\n");
             print_key(sum_atual);
-            printf("\n");
+            printf("\n");*/
 
-            sum_atual = add(sum_anterior, lista[i][pos]);
+        // sum_atual = add(sum_anterior, lista[i][pos]);
 
-            printf("after\n");
+        /* printf("after\n");
             print_key(sum_atual);
             printf("\n");
-            sleep(1);
-        }
+            sleep(1);*/
 
         // printf("%2d ", i); // Para teste.
         // print_key(T[i]);   // Para teste.
 
         // k is increased, because
         // we have added a new character
-        teste_symbol_table_rec(encrypted, sum_atual, prefix, pos + 1, lista, sum_anterior);
+        teste_symbol_table_rec(encrypted, prefix, pos + 1, lista, p);
+        // printf("desempilhando %d\n", pos);
+        // printf("%d\n", p.topo);
+        while (p.topo > pos)
+        {
+            p.topo--;
+            // printf("%d\n", p.topo);
+            // print_pilha(&p);
+            // sleep(1);
+        }
     }
-    sum_anterior = sum_atual;
 }
 
 void teste_symbol_table(Key encrypted, Key T[N])
 {
 
     Key pass = {{0}};
-    static Key sum_atual = {{0}};
     Key lista[R][C];
     for (int l = 0; l < R; l++)
     {
@@ -372,59 +465,8 @@ void teste_symbol_table(Key encrypted, Key T[N])
             lista[l][p] = sum;
         }
     }
-    teste_symbol_table_rec(encrypted, sum_atual, pass, 0, lista, sum_atual);
-}
-
-int bit_l(unsigned char k, int i)
-{
-    return (k >> (B - 1 - i % B)) & 1;
-}
-typedef struct
-{
-    Key k;
-    unsigned char c;
-
-} ItemPilha;
-
-typedef struct
-{
-    ItemPilha pilha[C];
-    int topo;
-} Pilha;
-
-Pilha *Pilha_init()
-{
-    Pilha *p = malloc(sizeof(*p));
-    p->topo = -1;
-    return p;
-}
-
-void empilha(Pilha *p, Key k, unsigned char c)
-{
-
-    if (p->topo < C - 1)
-    {
-        p->topo++;
-        p->pilha[p->topo].k = k;
-        p->pilha[p->topo].c = c;
-    }
-}
-
-void desempilha(Pilha *p)
-{
-    if (p->topo > -1)
-    {
-        p->topo--;
-    }
-}
-
-ItemPilha olha_topo(Pilha *p)
-{
-    if (p->topo > -1)
-    {
-        ItemPilha item = p->pilha[p->topo];
-        return item;
-    }
+    Pilha p = Pilha_init();
+    teste_symbol_table_rec(encrypted, pass, 0, lista, p);
 }
 
 void novo_(Key encrypted, Key T[N])
@@ -495,8 +537,8 @@ void novo_(Key encrypted, Key T[N])
 
     double tam = pow(R, C);
 
-    Pilha *p = Pilha_init();
-    p->topo = C - 1;
+    // Pilha *p = Pilha_init();
+    //  p->topo = C - 1;
 
     for (double i = 0; i < tam; i++)
     {
@@ -506,32 +548,34 @@ void novo_(Key encrypted, Key T[N])
         for (j = 0; j < C; j++)
         {
 
-            ItemPilha top = olha_topo(p);
-            
-            if (top.c != k.digit[j] && p->topo == j)
-            {
-                desempilha(p);
-                top = olha_topo(p);
-                empilha(p, add(top.k, lista[k.digit[j]][j]), k.digit[j]);
-            }
+            //  ItemPilha top = olha_topo(p);
+
+            // if (top.c != k.digit[j] && p->topo == j)
+            // {
+            //     desempilha(p);
+            //     top = olha_topo(p);
+            //     empilha(p, add(top.k, lista[k.digit[j]][j]), k.digit[j]);
+            // }
 
             //Key *temp = (lista[k.digit[j]][j]);
-            /*if (k.digit[j] != 0)
-                passwordEncrypted = add(passwordEncrypted, lista[k.digit[j]][j]);*/
+            if (k.digit[j] != 0)
+                passwordEncrypted = add(passwordEncrypted, lista[k.digit[j]][j]);
         }
-        while (j < C)
-        {
-            ItemPilha top = olha_topo(p);
-            empilha(p, add(top.k, lista[k.digit[j]][j]), k.digit[j]);
-            j++;
-        }
-        ItemPilha top = olha_topo(p);
-        passwordEncrypted = top.k;
+        // while (j < C)
+        // {
+        //     ItemPilha top = olha_topo(p);
+        //     empilha(p, add(top.k, lista[k.digit[j]][j]), k.digit[j]);
+        //     j++;
+        // }
+        // ItemPilha top = olha_topo(p);
+        // passwordEncrypted = top.k;
+
+    
         if (equal(encrypted, passwordEncrypted))
         {
             print_key_char(k);
         }
         k = add1(k);
     }
-    free(p);
+    //  free(p);
 }
