@@ -337,12 +337,11 @@ void print_pilha(Pilha *p)
     }
     printf("\n\n");
 }
-Pilha empilha(Pilha p, Key k, unsigned char c)
+Pilha empilha(Pilha p, Key k)
 {
 
-    Key temp = add(p.pilha[p.topo], k);
     p.topo++;
-    p.pilha[p.topo] = temp;
+    p.pilha[p.topo] = k;
 
     return p;
 }
@@ -376,6 +375,7 @@ void teste_symbol_table_rec(Key encrypted, Key prefix, int pos, Key lista[R][C],
     // One by one add all characters
     // from set and recursively
     // call for pos equals to pos-1
+    Key sum_atual = olha_topo(&p);
     for (int i = 0; i < R; ++i)
     {
 
@@ -386,7 +386,7 @@ void teste_symbol_table_rec(Key encrypted, Key prefix, int pos, Key lista[R][C],
         // printf("%d\n", p.topo);
 
         // print_key(p.pilha[p.topo]);
-        Pilha nova = empilha(p, lista[i][pos], i);
+        Pilha nova = empilha(p, add(sum_atual,lista[i][pos]));
         // if (ALPHABET[i] == 'p' && pos == 0)
         // {
 
