@@ -101,7 +101,7 @@ Key subset_sum(const Key *k, Key T[N])
     Key sum = {{0}};
 
     int i;
-    for (i = 0; i < N; i++)
+    for (i = N - 1; i >= 0; i--)
     {
         int b = bit(k, i);
 
@@ -381,7 +381,6 @@ Key subset_sum_custom_teste(Key *k, Key T[N], int pos)
 
     return sum;
 }
-
 void teste_symbol_table_rec(const Key encrypted, Key prefix, int pos, Key lista[R][C], Pilha p)
 {
     // Base case: pos is 0,
@@ -394,7 +393,12 @@ void teste_symbol_table_rec(const Key encrypted, Key prefix, int pos, Key lista[
         // {
         //     print_key_char(prefix);
         // }
-
+        Key topo = olha_topo(&p);
+        if (equal(&topo, &encrypted))
+        {
+            print_key_char(&prefix);
+            return;
+        }
         return;
     }
 
@@ -402,28 +406,30 @@ void teste_symbol_table_rec(const Key encrypted, Key prefix, int pos, Key lista[
     // from set and recursively
     // call for pos equals to pos-1
     Key sum_atual = olha_topo(&p);
+
     for (int i = 0; i < R; ++i)
     {
-
         // Next character of input added
         prefix.digit[pos - 1] = i;
 
         Key novo_key = add(&sum_atual, &(lista[i][pos - 1]));
-        int cmp = compareK(&novo_key, &encrypted);
-        if (cmp == 0)
-        {
-            print_key_char(&prefix);
-            return;
-        }
-        else
-        {
-            if (cmp < 0)
-            {
-                Pilha nova = empilha(p, novo_key);
 
-                teste_symbol_table_rec(encrypted, prefix, pos - 1, lista, nova);
-            }
-        }
+        // int cmp = compareK(&novo_key, &encrypted);
+
+        // if (cmp == 0)
+        // {
+        //     print_key_char(&prefix);
+        //     return;
+        // }
+        // else
+        // {
+        //     if (cmp < 0)
+        //     {
+        Pilha nova = empilha(p, novo_key);
+
+        teste_symbol_table_rec(encrypted, prefix, pos - 1, lista, nova);
+        //     }
+        // }
     }
 }
 
@@ -497,7 +503,7 @@ void novo_(const Key encrypted, Key T[N])
 
         Key passwordEncrypted = {{0}};
         int j;
-        for (j = 0; j < C; j++)
+        for (j = C - 1; j >= 0; j--)
         {
 
             //  ItemPilha top = olha_topo(p);
@@ -511,7 +517,7 @@ void novo_(const Key encrypted, Key T[N])
 
             //Key *temp = (lista[k.digit[j]][j]);
             if (k.digit[j] != 0)
-                add(&passwordEncrypted, &(lista[k.digit[j]][j]));
+                passwordEncrypted = add(&passwordEncrypted, &(lista[k.digit[j]][j]));
         }
         // while (j < C)
         // {
