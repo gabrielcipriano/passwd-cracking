@@ -29,16 +29,16 @@ Key init_key(unsigned char s[])
 }
 
 // Exibe a chave 'k' em stdout em três formatos: chars, ints (base R) e binário.
-void print_key(Key k)
+void print_key(const Key *k)
 {
     for (int i = 0; i < C; i++)
     {
-        printf("%c", ALPHABET[(unsigned char)(k.digit[i])]);
+        printf("%c", ALPHABET[(unsigned char)(k->digit[i])]);
     }
     printf("  ");
     for (int i = 0; i < C; i++)
     {
-        printf("%2d ", k.digit[i]);
+        printf("%2d ", k->digit[i]);
     }
     printf("  ");
     for (int i = 0; i < N; i++)
@@ -49,60 +49,54 @@ void print_key(Key k)
 }
 
 // Exibe a chave 'k' em stdout somente no formato de chars.
-void print_key_char(Key k)
+void print_key_char(const Key *k)
 {
     for (int i = 0; i < C; i++)
     {
-        if (k.digit[i] < 0)
-            printf("%d", k.digit[i]);
-        else
-        {
-            printf("%c", ALPHABET[(unsigned char)(k.digit[i])]);
-        }
+
+        printf("%c", ALPHABET[(unsigned char)(k->digit[i])]);
     }
     printf("\n");
 }
 
 // Retorna o i-ésimo bit de k.
-int bit(Key k, int i)
+int bit(const Key *k, int i)
 {
-    return (k.digit[i / B] >> (B - 1 - i % B)) & 1;
+    return (k->digit[i / B] >> (B - 1 - i % B)) & 1;
 }
 
 // Retorna a + b (mod 2^N) .
-Key add(Key a, Key b)
+Key add(const Key *a, const Key *b)
 {
     Key c = {{0}};
     int carry = 0;
     for (int i = C - 1; i >= 0; i--)
     {
-        int sum = a.digit[i] + b.digit[i] + carry;
+        int sum = a->digit[i] + b->digit[i] + carry;
         c.digit[i] = sum % R;
         carry = sum >= R;
     }
     return c;
 }
-Key add1(Key a)
+void add1(Key *a)
 {
-    int sum = a.digit[C - 1] + 1;
+    int sum = a->digit[C - 1] + 1;
 
-    a.digit[C - 1] = sum % R;
+    a->digit[C - 1] = sum % R;
     int carry = sum >= R;
     int i = C - 2;
     while (i >= 0 && carry != 0)
     {
-        sum = a.digit[i] + carry;
-        a.digit[i] = sum % R;
+        sum = a->digit[i] + carry;
+        a->digit[i] = sum % R;
         carry = sum >= R;
         i--;
     }
-
-    return a;
 }
 
 // Soma (módulo 2^N) e retorna o subconjunto dos inteiros T[i] que
 // são indexados pelos bits de k.
-Key subset_sum(Key k, Key T[N])
+Key subset_sum(const Key *k, Key T[N])
 {
     Key sum = {{0}};
 
@@ -113,7 +107,7 @@ Key subset_sum(Key k, Key T[N])
 
         if (b)
         {
-            sum = add(sum, T[i]);
+            sum = add(&sum, &(T[i]));
 
             /*   printf("%2d   ", i); // Para teste.
             print_key(T[i]);     // Para teste.
@@ -126,16 +120,18 @@ Key subset_sum(Key k, Key T[N])
     return sum;
 }
 
-int compareK(Key a, Key b)
+int compareK(const Key *a, const Key *b)
 {
 
-    for (int i = 0; i < C; i++)
+    for (int i = N - 1; i >= 0; i--)
     {
-        if (a.digit[i] < b.digit[i])
+        int ba = bit(a, i);
+        int bb = bit(b, i);
+        if (ba < bb)
         {
             return -1;
         }
-        if (a.digit[i] > b.digit[i])
+        if (ba > bb)
         {
             return 1;
         }
@@ -144,12 +140,12 @@ int compareK(Key a, Key b)
     return 0;
 }
 
-bool equal(Key a, Key b)
+bool equal(const Key *a, const Key *b)
 {
 
     for (int i = 0; i < C; i++)
     {
-        if (a.digit[i] != b.digit[i])
+        if (a->digit[i] != b->digit[i])
         {
             return false;
         }
@@ -158,14 +154,9 @@ bool equal(Key a, Key b)
     return true;
 }
 
-void dec_forca_bruta(Key encrypted, Key T[N])
+void dec_forca_bruta(const Key encrypted, Key T[N])
 {
     Key k;
-    static Key a;
-
-    // Senha para incrementar 1
-
-    a.digit[C - 1] = 1;
 
     // Quantidade de combinações
     double tam = pow(R, C);
@@ -173,12 +164,12 @@ void dec_forca_bruta(Key encrypted, Key T[N])
     for (double i = 0; i < tam; i++)
     {
 
-        Key passwordEncrypted = subset_sum(k, T);
-        if (equal(encrypted, passwordEncrypted))
+        Key passwordEncrypted = subset_sum(&k, T);
+        if (equal(&encrypted, &passwordEncrypted))
         {
-            print_key_char(k);
+            print_key_char(&k);
         }
-        k = add(k, a);
+        add1(&k);
     }
 }
 
@@ -204,14 +195,9 @@ void dec_forca_bruta(Key encrypted, Key T[N])
     return sum;
 }*/
 
-void dec_symbol_table_new(Key encrypted, Key T[N])
+void dec_symbol_table_new(const Key encrypted, Key T[N])
 {
     Key k = {{0}};
-    Key a = {{0}};
-
-    // Senha para incrementar 1
-
-    a.digit[C - 1] = 1;
 
     // Quantidade de combinações
     double tam = pow(R, C);
@@ -220,16 +206,16 @@ void dec_symbol_table_new(Key encrypted, Key T[N])
     for (double i = 0; i < tam; i++)
     {
         Value passwordEncrypted = subset_sum_tree(k, T, root);
-        if (equal(encrypted, passwordEncrypted))
+        if (equal(&encrypted, &passwordEncrypted))
         {
-            print_key_char(k);
+            print_key_char(&k);
         }
-        k = add(k, a);
+        add1(&k);
     }
     ST_finish(root);
 }
 
-void dec_symbol_table(Key encrypted, Key T[N])
+void dec_symbol_table(const Key encrypted, Key T[N])
 {
 
     /*  Key k={{0}};
@@ -299,6 +285,25 @@ void dec_symbol_table(Key encrypted, Key T[N])
 }
 #include <unistd.h>
 
+void initi_lista_ley(Key(lista[R][C]), Key T[N])
+{
+    for (int l = 0; l < R; l++)
+    {
+        for (int p = 0; p <= C; p++)
+        {
+            Key sum = {{0}};
+            for (int b = 0; b < B; b++)
+            {
+                int bitt = bit_l(l, b);
+                if (bitt)
+                {
+                    sum = add(&sum, &(T[b + (p * B)]));
+                }
+            }
+            (lista[l][p]) = sum;
+        }
+    }
+}
 int bit_l(unsigned char k, int i)
 {
     return (k >> (B - 1 - i % B)) & 1;
@@ -333,7 +338,7 @@ void print_pilha(Pilha *p)
     for (int i = 0; i <= p->topo && i <= C; i++)
     {
         printf("i: %d ", i);
-        print_key(p->pilha[i]);
+        print_key(&(p->pilha[i]));
     }
     printf("\n\n");
 }
@@ -356,19 +361,40 @@ Key olha_topo(Pilha *p)
     return p->pilha[p->topo];
 }
 
-void teste_symbol_table_rec(Key encrypted, Key prefix, int pos, Key lista[R][C], Pilha p)
+Key subset_sum_custom_teste(Key *k, Key T[N], int pos)
+{
+    Key sum = {{0}};
+
+    int i;
+
+    for (int p = pos; p < C; p++)
+    {
+        for (int b = 0; b < B; b++)
+        {
+            int bitt = bit_l(k->digit[p], b);
+            if (bitt)
+            {
+                sum = add(&sum, &(T[b + (p * B)]));
+            }
+        }
+    }
+
+    return sum;
+}
+
+void teste_symbol_table_rec(const Key encrypted, Key prefix, int pos, Key lista[R][C], Pilha p)
 {
     // Base case: pos is 0,
     // print prefix
-    if (pos == C)
+    if (pos == 0)
     {
 
-        // Key passwordEncrypted = subset_sum(prefix, map);
+        // // Key passwordEncrypted = subset_sum(prefix, map);
+        // if (equal(encrypted, olha_topo(&p)))
+        // {
+        //     print_key_char(prefix);
+        // }
 
-        if (equal(encrypted, olha_topo(&p)))
-        {
-            print_key_char(prefix);
-        }
         return;
     }
 
@@ -380,109 +406,42 @@ void teste_symbol_table_rec(Key encrypted, Key prefix, int pos, Key lista[R][C],
     {
 
         // Next character of input added
-        prefix.digit[pos] = i;
-        // printf("empilhando letra %c na pos %d\n", ALPHABET[i], pos + 1);
-        // printf("topo: ");
-        // printf("%d\n", p.topo);
+        prefix.digit[pos - 1] = i;
 
-        // print_key(p.pilha[p.topo]);
-        Pilha nova = empilha(p, add(sum_atual,lista[i][pos]));
-        // if (ALPHABET[i] == 'p' && pos == 0)
-        // {
+        Key novo_key = add(&sum_atual, &(lista[i][pos - 1]));
+        int cmp = compareK(&novo_key, &encrypted);
+        if (cmp == 0)
+        {
+            print_key_char(&prefix);
+            return;
+        }
+        else
+        {
+            if (cmp < 0)
+            {
+                Pilha nova = empilha(p, novo_key);
 
-        //     print_pilha(&p);
-        // }
-        // if (ALPHABET[i] == 'a' && pos == 1)
-        // {
-        //     print_pilha(&p);
-        // }
-        // if (ALPHABET[i] == 's' && pos == 2)
-        // {
-        //     print_pilha(&p);
-        // }
-        // if (ALPHABET[i] == 's' && pos == 3)
-        // {
-        //     print_pilha(&p);
-        // }
-
-        // printf("topo: ");
-        // printf("%d\n", p.topo);
-        // print_key(p.pilha[p.topo]);
-        //sleep(1);
-
-        /* printf("\npos: %d\n", pos);
-            print_key(prefix);
-            printf("before\n");
-            print_key(sum_atual);
-            printf("\n");*/
-
-        // sum_atual = add(sum_anterior, lista[i][pos]);
-
-        /* printf("after\n");
-            print_key(sum_atual);
-            printf("\n");
-            sleep(1);*/
-
-        // printf("%2d ", i); // Para teste.
-        // print_key(T[i]);   // Para teste.
-
-        // k is increased, because
-        // we have added a new character
-        teste_symbol_table_rec(encrypted, prefix, pos + 1, lista, nova);
-        // printf("desempilhando %d\n", pos);
-        // printf("%d\n", p.topo);
+                teste_symbol_table_rec(encrypted, prefix, pos - 1, lista, nova);
+            }
+        }
     }
 }
 
-void teste_symbol_table(Key encrypted, Key T[N])
+void teste_symbol_table(const Key encrypted, Key T[N])
 {
 
     Key pass = {{0}};
     Key lista[R][C];
-    for (int l = 0; l < R; l++)
-    {
-        for (int p = 0; p <= C; p++)
-        {
 
-            Key sum = {{0}};
-            if (l != 0)
-                for (int b = 0; b < B; b++)
-                {
-                    int bitt = bit_l(l, b);
-                    if (bitt)
-                    {
-                        sum = add(sum, T[b + (p * B)]);
-                    }
-                }
-
-            lista[l][p] = sum;
-        }
-    }
+    initi_lista_ley(lista, T);
     Pilha p = Pilha_init();
-    teste_symbol_table_rec(encrypted, pass, 0, lista, p);
+    teste_symbol_table_rec(encrypted, pass, C, lista, p);
 }
 
-void novo_(Key encrypted, Key T[N])
+void novo_(const Key encrypted, Key T[N])
 {
     Key lista[R][C];
-    for (int l = 0; l < R; l++)
-    {
-        for (int p = 0; p <= C; p++)
-        {
-
-            Key sum = {{0}};
-            for (int b = 0; b < B; b++)
-            {
-                int bitt = bit_l(l, b);
-                if (bitt)
-                {
-                    sum = add(sum, T[b + (p * B)]);
-                }
-            }
-
-            lista[l][p] = sum;
-        }
-    }
+    initi_lista_ley(lista, T);
 
     /*   Pilha *p = Pilha_init();
 
@@ -552,7 +511,7 @@ void novo_(Key encrypted, Key T[N])
 
             //Key *temp = (lista[k.digit[j]][j]);
             if (k.digit[j] != 0)
-                passwordEncrypted = add(passwordEncrypted, lista[k.digit[j]][j]);
+                add(&passwordEncrypted, &(lista[k.digit[j]][j]));
         }
         // while (j < C)
         // {
@@ -563,11 +522,46 @@ void novo_(Key encrypted, Key T[N])
         // ItemPilha top = olha_topo(p);
         // passwordEncrypted = top.k;
 
-        if (equal(encrypted, passwordEncrypted))
+        if (equal(&encrypted, &passwordEncrypted))
         {
-            print_key_char(k);
+            print_key_char(&k);
         }
-        k = add1(k);
+        add1(&k);
     }
     //  free(p);
+}
+
+void reducao_teste(const Key encrypted, Key T[N])
+{
+    //     Key lista[R][C];
+
+    //     initi_lista_ley(lista, T);
+
+    //     int limite_superior = R;
+    //     Key pass_dec = {{0}};
+
+    //     Key passwordEncrypted = {{0}};
+    // for (int pos = 0; pos < C; pos++)
+    // {
+    //     int l;
+
+    //     for (l = 0; l < limite_superior; l++)
+    //     {
+    //         Key novo_key = add(pass_dec, lista[l][pos]);
+    //         int cmp = compareK(novo_key, encrypted);
+    //         if (cmp > 0)
+    //         {
+    //             return;
+    //         }
+    //         else
+    //         {
+    //             if (cmp == 0)
+    //             {
+    //                 break;
+    //             }
+    //         }
+    //     }
+
+    //     limite_superior = l;
+    // }
 }

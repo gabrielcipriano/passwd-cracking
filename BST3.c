@@ -221,12 +221,12 @@ Value subset_sum_tree(Key k, Key T[N], Node *root)
     Node *n = root;
     for (int i = 0; i < N; i++)
     {
-        int b = bit(k, i);
+        int b = bit(&k, i);
         if (b == 1)
         {
             if (n->r == NULL)
             {
-                sum = add(sum, T[i]);
+                add(&sum, &(T[i]));
                 n->r = create_node(1, sum);
             }
             else
@@ -252,7 +252,8 @@ Value subset_sum_tree(Key k, Key T[N], Node *root)
 
 bool ST_contains(Node *root, unsigned char key)
 {
-    return compareK(ST_get(root, key), NULL_Value) != 0;
+    Key k = ST_get(root, key);
+    return compareK(&k, &NULL_Value) != 0;
 }
 
 static int size(Node *n)

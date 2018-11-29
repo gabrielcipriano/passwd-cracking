@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     password = init_key((unsigned char *)argv[1]);
     // Exibe a senha informada.
     printf("   ");
-    print_key(password);
+    print_key(&password);
     printf("\n");
 
     // Lê a tabela T.
@@ -58,11 +58,11 @@ int main(int argc, char *argv[])
     }
 
     // Calcula a soma de subconjunto.
-    encrypted = subset_sum(password, T);
+    encrypted = subset_sum(&password, T);
 
     // Exibe o resultado.
     printf("\n   ");
-    print_key(encrypted);
+    print_key(&encrypted);
     printf("\n");
 
 

@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     encrypted = init_key((unsigned char *)argv[1]);
     // Exibe a senha encriptada.
     printf("   ");
-    print_key(encrypted);
+    print_key(&encrypted);
     printf("\n");
 
     // Lê a tabela T.
