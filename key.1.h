@@ -3,7 +3,7 @@
 #ifndef KEY_H
 #define KEY_H
 
-#define C 5        // Número de caracteres na senha.
+#define C 6        // Número de caracteres na senha.
 #define B 5        // Número de bits por caractere.
 #define R (1 << B) // Tamanho do alfabeto (sempre = 32).
 #define N (B * C)  // Número de bits por senha.
@@ -47,12 +47,13 @@ Key subset_sum(const Key *k, Key T[N]);
 // Lista todas as possíveis senhas com um algoritmo de força bruta
 void dec_forca_bruta(const Key encrypted, Key T[N]);
 
-
 // Lista todas as possíveis senhas com um algoritmo de tabela de simbolos
-void dec_symbol_table(const Key *encrypted, Key T[N]);
-void novo_(const Key encrypted, Key T[N]);
+void dec_symbol_table(const Key encrypted, Key T[N]);
 
-// Compara duas chaves
+void teste_symbol_table(const Key *encrypted, Key T[N]);
+void dec_symbol_table_new(const Key encrypted, Key T[N]);
+void novo_(const Key encrypted, Key T[N]);
+// COmpara duas chaves
 int compareK(const Key *a, const Key *b);
 
 #endif
