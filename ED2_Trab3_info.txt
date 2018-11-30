@@ -8,7 +8,7 @@ Nome 2:
 SO utilizado: Bash on Ubuntu 16.04 - Windows 10 1709
 Versão do compilador utilizado: gcc version 5.4.0
 Editor(es) de código utilizado(s): Visual Studio Code 
-Número de horas gastas para fazer o trabalho (aproximado): 15
+Número de horas gastas para fazer o trabalho (aproximado): 30
 
 /******************************************************************************
  *  Se você usou o arquivo key.c, descreva qualquer modificação/otimização que
@@ -17,16 +17,19 @@ Número de horas gastas para fazer o trabalho (aproximado): 15
  *****************************************************************************/
 
 
+
 /******************************************************************************
  *  Descreva a sua solução força bruta (brute.c) .
  *****************************************************************************/
-
+Itera por todas as possibilidades, em cada uma delas chama a função de criptografar
+e compara com a senha passada.
 
 /******************************************************************************
  *  Faça uma descrição de alto nível do seu programa de quebra de senha
  *  (decrypt.c).
  *****************************************************************************/
-
+Gera uma matriz de valores pra cada caracter do alfabeto em posição relativa, dado que a soma é associativa e comutativa.
+Itera 
 
 /******************************************************************************
  *  Descreva a implementação da tabela de símbolos que você utilizou em
@@ -53,8 +56,8 @@ Número de horas gastas para fazer o trabalho (aproximado): 15
 
 Tamanho     Tempo (segundos)
 ----------------------------
- 4
- 5
+ 4 0.344 segundos
+ 5 19.156 segundos
  6
  8
 
@@ -77,7 +80,9 @@ Tamanho    Tempo (segundos)    Memória (bytes)
  *  Quantas operações decrypt.c faz sobre uma senha com N bits?
  *  Utilize a notação de big-Oh nas suas respostas.
  *****************************************************************************/
-
+Dado que N é dado por C*B.
+brute.c faz O(C(N-1)) operações sobre cada senha para gerar a senha e comparar ela com a cifra passada
+decrypt.c faz(C^2) operações sobre cada senha para gerar a senha e comparar ela com a cifra passada.
 
 /******************************************************************************
  *  Descreva qualquer problema grave que você encontrou ao desenvolver
