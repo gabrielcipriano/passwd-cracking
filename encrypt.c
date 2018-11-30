@@ -57,6 +57,10 @@ int main(int argc, char *argv[])
         T[i] = init_key(buffer);
     }
 
+    // for (int i = 0; i < R; i++)
+    // {
+    //     printf("%c %i\n", ALPHABET[i], i);
+    // }
     // Calcula a soma de subconjunto.
     encrypted = subset_sum(&password, T);
 

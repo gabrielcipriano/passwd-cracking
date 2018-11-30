@@ -3,7 +3,7 @@
 #ifndef KEY_H
 #define KEY_H
 
-#define C 6        // Número de caracteres na senha.
+#define C 5        // Número de caracteres na senha.
 #define B 5        // Número de bits por caractere.
 #define R (1 << B) // Tamanho do alfabeto (sempre = 32).
 #define N (B * C)  // Número de bits por senha.
@@ -15,7 +15,7 @@
 // a passagem de parâmetros nas funções.
 typedef struct
 {
-    unsigned char digit[C];
+    unsigned char digit[C + 1];
 } Key;
 
 typedef Key Value;
@@ -37,7 +37,7 @@ int bit(const Key *k, int i);
 int bit_l(unsigned char k, int i);
 
 // Retorna a + b (mod 2^N) .
-Key add(const Key *a,const Key *b);
+Key add(const Key *a, const Key *b);
 void add1(Key *a);
 
 // Soma (módulo 2^N) e retorna o subconjunto dos inteiros T[i] que
