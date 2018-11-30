@@ -1,9 +1,11 @@
 #include <stdio.h>
-#include "key.h"
 #include <stdbool.h>
 #include <unistd.h>
 #include <math.h>
 #include <time.h>
+#include <unistd.h>
+
+#include "key.h"
 #include "st.h"
 // Inicializa e retorna uma chave a partir do vetor de char dado.
 // Exemplo: s = "abcdwxyz"  =>  k = 0 1 2 3 22 23 24 25
@@ -77,6 +79,7 @@ Key add(const Key *a, const Key *b)
         int sum = a->digit[i] + b->digit[i] + carry;
         c.digit[i] = sum % R;
         carry = sum >= R;
+        
     }
     c.digit[0] = carry;
     return c;
@@ -117,20 +120,20 @@ Key subset_sum(const Key *k, Key T[N])
         {
             Key temp = add(&sum, &(T[i - B]));
 
-            if ((compareK(&sum, &temp)) > 0)
-            {
-                printf("antes\n");
-                printf("maior\n");
-                printf("depois\n\n");
-            }
+            // if ((compareK(&sum, &temp)) > 0)
+            // {
+            //     printf("antes\n");
+            //     printf("maior\n");
+            //     printf("depois\n\n");
+            // }
 
             sum = temp;
 
             // printf("%2d   ", i); // Para teste.
             // print_key(&T[i]);    // Para teste.
-            printf("sum: ");
-            print_key(&sum); // Para teste.
-            printf("\n");
+            // printf("sum: ");
+            // print_key(&sum); // Para teste.
+            // printf("\n");
         }
     }
 
@@ -212,8 +215,6 @@ void dec_forca_bruta(const Key encrypted, Key T[N])
         add1(&k);
     }
 }
-
-#include <unistd.h>
 
 void initi_lista_ley(Key(lista[R][C]), Key T[N])
 {
