@@ -11,7 +11,6 @@ Key init_key(unsigned char s[])
 {
     // Converte cada char em um int no intervalo 0-31.
     Key k;
-    k.digit[0] = 0;
     for (int i = 1; i <= C; i++)
     {
         for (int j = 0; j < R; j++)
@@ -22,6 +21,8 @@ Key init_key(unsigned char s[])
             }
         }
     }
+
+    k.digit[0] = 0;
     // Note que não há problema de retornar uma variável local aqui porque
     // a semântica do C para variáveis do tipo struct (não struct*) é fazer
     // uma cópia da struct inteira. Isso pode parecer ineficiente mas lembre
@@ -138,7 +139,6 @@ Key subset_sum(const Key *k, Key T[N])
 
 int compareK(const Key *a, const Key *b)
 {
-
     for (int i = 0; i <= C; i++)
     {
         if (a->digit[i] > b->digit[i])
@@ -182,7 +182,6 @@ bool equal(const Key *a, const Key *b)
         }
     }
 
-    print_key(a);
     return true;
 }
 
@@ -190,6 +189,9 @@ void dec_forca_bruta(const Key encrypted, Key T[N])
 {
     Key k;
 
+    Key lista[R][C];
+
+    initi_lista_ley(lista, T);
     // Quantidade de combinações
     double tam = pow(R, C);
 
@@ -197,6 +199,12 @@ void dec_forca_bruta(const Key encrypted, Key T[N])
     {
 
         Key passwordEncrypted = subset_sum(&k, T);
+        // Key passwordEncrypted = {{0}};
+
+        // for (int p = 0; p <= C; p++)
+        // {
+        //     passwordEncrypted = add(&passwordEncrypted, &(lista[k.digit[p+1]][p+1]));
+        // }
         if (equal(&encrypted, &passwordEncrypted))
         {
             print_key_char(&k);
@@ -211,18 +219,22 @@ void initi_lista_ley(Key(lista[R][C]), Key T[N])
 {
     for (int l = 0; l < R; l++)
     {
-        for (int p = 1; p <= C; p++)
+        for (int p = 0; p < C; p++)
         {
             Key sum = {{0}};
             for (int b = 0; b < B; b++)
             {
+
                 int bitt = bit_l(l, b);
+
                 if (bitt)
                 {
-                    sum = add(&sum, &(T[b + (p * B)]));
+                    int pos = b + ((p)*B);
+
+                    sum = add(&sum, &(T[pos]));
                 }
             }
-            (lista[l][p - 1]) = sum;
+            (lista[l][p]) = sum;
         }
     }
 }
@@ -306,7 +318,7 @@ Key subset_sum_custom_teste(Key *k, Key T[N], int pos)
 
 Key testealo = {{15, 0, 18, 18, 22}};
 
-void teste_symbol_table_rec(const Key *encrypted, Key prefix, int pos, Key lista[R][C], Pilha p)
+void teste_symbol_table_rec(const Key *encrypted, Key prefix, int pos, const Key lista[R][C], Pilha p)
 {
     // Base case: pos is 0,
     // print prefix
@@ -329,15 +341,16 @@ void teste_symbol_table_rec(const Key *encrypted, Key prefix, int pos, Key lista
     for (int i = 0; i < R; ++i)
     {
         // Next character of input added
-        prefix.digit[pos - 1] = i;
+        prefix.digit[pos] = i;
 
         Key novo_key = add(&sum_atual, &(lista[i][pos - 1]));
-        // if (equal(&prefix, &testealo))
-        // {
-        //     print_key(&novo_key);
-        // }
+        if (equal(&prefix, &testealo))
+        {
+            print_key(&prefix);
+            print_key(&novo_key);
+        }
 
-        // int cmp = compareK(&novo_key, &encrypted);
+        // int cmp = compareK(&novo_key, encrypted);
 
         // if (cmp > 0)
         // {
@@ -380,12 +393,11 @@ void novo_(const Key encrypted, Key T[N])
 
         Key passwordEncrypted = {{0}};
         int j;
-        for (j = C - 1; j >= 0; j--)
+        for (j = C; j > 0; j--)
         {
-
             //Key *temp = (lista[k.digit[j]][j]);
             if (k.digit[j] != 0)
-                passwordEncrypted = add(&passwordEncrypted, &(lista[k.digit[j]][j]));
+                passwordEncrypted = add(&passwordEncrypted, &(lista[k.digit[j]][j - 1]));
         }
 
         if (equal(&encrypted, &passwordEncrypted))

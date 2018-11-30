@@ -5,8 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-    Key encrypted; // A senha criptografada.
-    Key T[N];      // A tabela T.
+    Key T[N]; // A tabela T.
 
     if (argc != 2)
     {
@@ -14,7 +13,7 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    encrypted = init_key((unsigned char *)argv[1]);
+    Key encrypted = init_key((unsigned char *)argv[1]);
     // Exibe a senha encriptada.
     printf("   ");
     print_key(&encrypted);

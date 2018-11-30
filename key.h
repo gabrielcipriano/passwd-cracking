@@ -55,5 +55,6 @@ void dec_symbol_table_new(const Key encrypted, Key T[N]);
 void novo_(const Key encrypted, Key T[N]);
 // COmpara duas chaves
 int compareK(const Key *a, const Key *b);
+void initi_lista_ley(Key(lista[R][C]), Key T[N]);
 
 #endif
