@@ -67,7 +67,7 @@ int bit(const Key *k, int i)
 }
 
 // Retorna a + b (mod 2^N) .
-Key add(const Key *a, const Key *b)
+Key add(const Key *a, const Key *b) //C
 {
     Key c = {{0}};
     int carry = 0;
@@ -99,17 +99,17 @@ void add1(Key *a)
 
 // Soma (módulo 2^N) e retorna o subconjunto dos inteiros T[i] que
 // são indexados pelos bits de k.
-Key subset_sum(const Key *k, Key T[N])
+Key subset_sum(const Key *k, Key T[N]) // N*C
 {
     Key sum = {{0}};
 
     for (int i = 0; i < N; i++)
     {
-        int b = bit(k, i);
+        int b = bit(k, i); //Constante
 
         if (b)
         {
-            sum = add(&sum, &(T[i]));
+            sum = add(&sum, &(T[i])); //C
 
             // printf("%2d   ", i); // Para teste.
             // print_key(T[i]);     // Para teste.
@@ -153,22 +153,22 @@ bool equal(const Key *a, const Key *b)
     return true;
 }
 
-void dec_forca_bruta(const Key encrypted, Key T[N])
+void dec_forca_bruta(const Key encrypted, Key T[N]) // (R^C) * C*(N + 1)
 {
     Key k;
 
     // Quantidade de combinações
     double tam = pow(R, C);
 
-    for (double i = 0; i < tam; i++)
+    for (double i = 0; i < tam; i++) //(R^C)*(N*C + 2C)
     {
 
-        Key passwordEncrypted = subset_sum(&k, T);
-        if (equal(&encrypted, &passwordEncrypted))
+        Key passwordEncrypted = subset_sum(&k, T); // N*C
+        if (equal(&encrypted, &passwordEncrypted)) // C
         {
             print_key_char(&k);
         }
-        add1(&k);
+        add1(&k); // C
     }
 }
 
@@ -197,66 +197,67 @@ int bit_l(unsigned char k, int i)
     return (k >> (B - 1 - i % B)) & 1;
 }
 
-void dec_symbol_table_rec(const Key *encrypted, Key prefix, int pos, Key lista[R][C], Key sum_anterior)
+void dec_symbol_table_rec(const Key *encrypted, Key prefix, int pos, Key lista[R][C], Key *sum_anterior) // (R^C)*(2C)
 {
-    // Base case: pos é 0
+    // Base case: pos é C
     if (pos == C)
     {
-        if (equal(&sum_anterior, encrypted))
+        if (equal(sum_anterior, encrypted)) // C Obrigatorio, nao tem como reduzir
         {
             print_key_char(&prefix);
-            return;
         }
         return;
     }
-
     // Adicionar caracteres 1 por 1 e mudar posicao
-    for (int i = 0; i < R; ++i)
+    for (int i = 0; i < R; ++i) // R*
     {
         prefix.digit[pos] = i;
 
-        Key novo_key = add(&sum_anterior, &(lista[i][pos]));
+        Key novo_key = add(sum_anterior, &(lista[i][pos]));
 
-        dec_symbol_table_rec(encrypted, prefix, pos + 1, lista, novo_key);
+        dec_symbol_table_rec(encrypted, prefix, pos + 1, lista, &novo_key);
     }
 }
+
+// T(C) = R*(C + T(C - 1))
+//      = R*(C + R*(C - 1 + T(C - 2)))
+//      = R*(C + R*(C - 1 + R*(C - 2 + T(C - 3))))
 
 void dec_symbol_table(const Key *encrypted, Key T[N])
 {
     Key pass = {{0}};
+    Key enc = {{0}};
 
     Key lista[R][C];
 
-    initi_lista_ley(lista, T);
+    initi_lista_ley(lista, T); // R*C
 
-    dec_symbol_table_rec(encrypted, pass, 0, lista, pass);
+    dec_symbol_table_rec(encrypted, pass, 0, lista, &enc);
+
 }
 
-void novo_(const Key encrypted, Key T[N])
+void dec_symbol_table2(const Key *encrypted, Key T[N]) // (R^C)*(C² + C) + R*C
 {
     Key lista[R][C];
-    initi_lista_ley(lista, T);
+    initi_lista_ley(lista, T); // R*C
 
     double tam = pow(R, C);
 
     Key k = {{0}};
 
-    for (double i = 0; i < tam; i++)
+    for (double i = 0; i < tam; i++) // (R^C)* (C² + C)
     {
 
         Key passwordEncrypted = {{0}};
-        int j;
-        for (j = C - 1; j >= 0; j--)
+        for (int j = 0; j < C; j++) // C
         {
-
-            if (k.digit[j] != 0)
-                passwordEncrypted = add(&passwordEncrypted, &(lista[k.digit[j]][j]));
+            passwordEncrypted = add(&passwordEncrypted, &(lista[k.digit[j]][j])); //C
         }
 
-        if (equal(&encrypted, &passwordEncrypted))
+        if (equal(encrypted, &passwordEncrypted)) //C obrigatorio, não tem como reduzir isso
         {
             print_key_char(&k);
         }
-        add1(&k);
+        add1(&k); //C
     }
 }

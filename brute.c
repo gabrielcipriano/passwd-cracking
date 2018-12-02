@@ -1,8 +1,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "key.h"
 #include <time.h>
+#include "key.h"
 
 int main(int argc, char *argv[])
 {
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
         T[i] = init_key(buffer);
     }
     // Força bruta
-    
+
     clock_t tic = clock();
     dec_forca_bruta(encrypted, T);
     clock_t toc = clock();
