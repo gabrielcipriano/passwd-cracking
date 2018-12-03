@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     // Força bruta
 
     clock_t tic = clock();
-    dec_forca_bruta(encrypted, T);
+    dec_forca_bruta(&encrypted, T);
     clock_t toc = clock();
 
     printf("Tempo: %.3f segundos\n", (double)(toc - tic) / CLOCKS_PER_SEC);

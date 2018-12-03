@@ -31,7 +31,7 @@ Trie *create_node()
     return t;
 }
 
-Trie *rec_insert(Trie *t, Key *key, Value val, int d)
+Trie *rec_insert(Trie *t, Key *key, int d, const Key lista[R][C], const Key *encrypted)
 {
     if (t == NULL)
     {
@@ -39,17 +39,27 @@ Trie *rec_insert(Trie *t, Key *key, Value val, int d)
     }
     if (d == C)
     {
-        t->val = val;
+        if (equal(&(t->val), encrypted))
+        {
+            print_key_char(key);
+        }
         return t;
     }
     unsigned char c = key->digit[d];
-    t->next[c] = rec_insert(t->next[c], key, val, d + 1);
+
+    t->next[c] = rec_insert(t->next[c], key, d + 1, lista, encrypted);
+
+    if (equal(&(t->next[c]->val), &NULL_Value))
+    {
+        printf("teste\n");
+        t->next[c]->val = add(&(t->val), &(lista[c][d]));
+    }
     return t;
 }
 
-Trie *Trie_insert(Trie *t, Key *key, Value val)
+Trie *Trie_insert(Trie *t, Key *key, const Key lista[R][C], const Key *encrypted)
 {
-    return rec_insert(t, key, val, 0);
+    return rec_insert(t, key, 0, lista, encrypted);
 }
 
 Trie *rec_search(Trie *t, Key *key, int d)

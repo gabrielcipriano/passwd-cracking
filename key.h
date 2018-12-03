@@ -1,9 +1,10 @@
 
 #include <stdlib.h>
+#include <stdbool.h>
 #ifndef KEY_H
 #define KEY_H
 
-#define C 5        // Número de caracteres na senha.
+#define C 7        // Número de caracteres na senha.
 #define B 5        // Número de bits por caractere.
 #define R (1 << B) // Tamanho do alfabeto (sempre = 32).
 #define N (B * C)  // Número de bits por senha.
@@ -20,7 +21,7 @@ typedef struct
 
 typedef Key Value;
 
-static const Key NULL_Value = {{R + 1}};
+static const Value NULL_Value = {{0}};
 
 // Inicializa e retorna uma chave a partir do vetor de char dado.
 // Exemplo: s = "abcdwxyz"  =>  k = 0 1 2 3 22 23 24 25
@@ -37,21 +38,23 @@ int bit(const Key *k, int i);
 int bit_l(unsigned char k, int i);
 
 // Retorna a + b (mod 2^N) .
-Key add(const Key *a,const Key *b);
+Key add(const Key *a, const Key *b);
 void add1(Key *a);
+
+bool equal(const Key *a, const Key *b);
 
 // Soma (módulo 2^N) e retorna o subconjunto dos inteiros T[i] que
 // são indexados pelos bits de k.
-Key subset_sum(const Key *k, Key T[N]);
+Key subset_sum(const Key *k, const Key T[N]);
 
 // Lista todas as possíveis senhas com um algoritmo de força bruta
-void dec_forca_bruta(const Key encrypted, Key T[N]);
-
+void dec_forca_bruta(const Key *encrypted, const Key T[N]);
 
 // Lista todas as possíveis senhas com um algoritmo de tabela de simbolos
-void dec_symbol_table(const Key *encrypted, Key T[N]);
-void dec_symbol_table2(const Key* encrypted, Key T[N]);
-void dec_symbol_table3(const Key* encrypted, Key T[N]);
+void dec_symbol_table(const Key *encrypted, const Key T[N]);
+void dec_symbol_table2(const Key *encrypted, const Key T[N]);
+void dec_symbol_table3(const Key *encrypted, const Key T[N]);
+void dec_symbol_table4(const Key *encrypted, const Key T[N]);
 
 // Compara duas chaves
 int compareK(const Key *a, const Key *b);

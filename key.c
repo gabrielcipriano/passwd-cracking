@@ -6,6 +6,7 @@
 #include <time.h>
 
 #include "key.h"
+#include "trie.h"
 // Inicializa e retorna uma chave a partir do vetor de char dado.
 // Exemplo: s = "abcdwxyz"  =>  k = 0 1 2 3 22 23 24 25
 Key init_key(unsigned char s[])
@@ -99,7 +100,7 @@ void add1(Key *a)
 
 // Soma (módulo 2^N) e retorna o subconjunto dos inteiros T[i] que
 // são indexados pelos bits de k.
-Key subset_sum(const Key *k, Key T[N]) // N*C
+Key subset_sum(const Key *k, const Key T[N]) // N*C
 {
     Key sum = {{0}};
 
@@ -153,30 +154,11 @@ bool equal(const Key *a, const Key *b)
     return true;
 }
 
-void dec_forca_bruta(const Key encrypted, Key T[N]) // (R^C) * C*(N + 1)
-{
-    Key k;
-
-    // Quantidade de combinações
-    double tam = pow(R, C);
-
-    for (double i = 0; i < tam; i++) //(R^C)*(N*C + 2C)
-    {
-
-        Key passwordEncrypted = subset_sum(&k, T); // N*C
-        if (equal(&encrypted, &passwordEncrypted)) // C
-        {
-            print_key_char(&k);
-        }
-        add1(&k); // C
-    }
-}
-
-void initi_lista_ley(Key(lista[R][C]), Key T[N])
+void init_lista_key(Key(lista[R][C]), const Key T[N]) // R*C*N
 {
     for (int l = 0; l < R; l++)
     {
-        for (int p = 0; p <= C; p++)
+        for (int p = 0; p < C; p++)
         {
             Key sum = {{0}};
             for (int b = 0; b < B; b++)
@@ -192,67 +174,17 @@ void initi_lista_ley(Key(lista[R][C]), Key T[N])
     }
 }
 
-int bit_l(unsigned char k, int i)
+void dec_forca_bruta(const Key *encrypted, const Key T[N]) // ((R^C) * (5*C² + 2C)
 {
-    return (k >> (B - 1 - i % B)) & 1;
-}
+    Key k;
 
-void dec_symbol_table_rec(const Key *encrypted, Key prefix, int pos, Key lista[R][C], Key *sum_anterior) // (R^C)*(2C)
-{
-    // Base case: pos é C
-    if (pos == C)
-    {
-        if (equal(sum_anterior, encrypted)) // C Obrigatorio, nao tem como reduzir
-        {
-            print_key_char(&prefix);
-        }
-        return;
-    }
-    // Adicionar caracteres 1 por 1 e mudar posicao
-    for (int i = 0; i < R; ++i) // R*
-    {
-        prefix.digit[pos] = i;
-
-        Key novo_key = add(sum_anterior, &(lista[i][pos]));
-
-        dec_symbol_table_rec(encrypted, prefix, pos + 1, lista, &novo_key);
-    }
-}
-
-// T(C) = R*(C + T(C - 1))
-//      = R*(C + R*(C - 1 + T(C - 2)))
-//      = R*(C + R*(C - 1 + R*(C - 2 + T(C - 3))))
-
-void dec_symbol_table(const Key *encrypted, Key T[N])
-{
-    Key pass = {{0}};
-    Key enc = {{0}};
-
-    Key lista[R][C];
-
-    initi_lista_ley(lista, T); // R*C
-
-    dec_symbol_table_rec(encrypted, pass, 0, lista, &enc);
-
-}
-
-void dec_symbol_table2(const Key *encrypted, Key T[N]) // (R^C)*(C² + C) + R*C
-{
-    Key lista[R][C];
-    initi_lista_ley(lista, T); // R*C
-
+    // Quantidade de combinações
     double tam = pow(R, C);
 
-    Key k = {{0}};
-
-    for (double i = 0; i < tam; i++) // (R^C)* (C² + C)
+    for (double i = 0; i < tam; i++) //(R^C)*(N*C + 2C)
     {
 
-        Key passwordEncrypted = {{0}};
-        for (int j = 0; j < C; j++) // C
-        {
-            passwordEncrypted = add(&passwordEncrypted, &(lista[k.digit[j]][j])); //C
-        }
+        Key passwordEncrypted = subset_sum(&k, T);
 
         if (equal(encrypted, &passwordEncrypted)) //C obrigatorio, não tem como reduzir isso
         {
@@ -260,4 +192,46 @@ void dec_symbol_table2(const Key *encrypted, Key T[N]) // (R^C)*(C² + C) + R*C
         }
         add1(&k); //C
     }
+}
+
+int bit_l(unsigned char k, int i)
+{
+    return (k >> (B - 1 - i % B)) & 1;
+}
+
+// T(C) = R*(2C + T(C - 1))
+//      = R*(C + R*(C - 1 + T(C - 2)))
+//      = R*(C + R*(C - 1 + R*(C - 2 + T(C - 3))))
+void dec_symbol_table_rec(const Key *encrypted, Key *prefix, int pos, Key lista[R][C], Key *sum_anterior)
+{
+    // Base case: pos é C
+    if (pos == 0)
+    {
+        if (equal(sum_anterior, encrypted))
+        {
+            print_key_char(prefix);
+        }
+        return;
+    }
+    // Adicionar caracteres 1 por 1 e mudar posicao
+    for (int i = 0; i < R; ++i) // R*(2C + T(C - 1))
+    {
+        prefix->digit[pos - 1] = i;
+
+        Key novo_key = add(sum_anterior, &(lista[i][pos - 1]));
+
+        dec_symbol_table_rec(encrypted, prefix, pos - 1, lista, &novo_key);
+    }
+}
+
+void dec_symbol_table(const Key *encrypted, const Key T[N]) // R*C*N + R*(2C + g(C - 1))
+{
+    Key pass = {{0}};
+    Key enc = {{0}};
+
+    Key lista[R][C];
+
+    init_lista_key(lista, T); // R*C*N
+
+    dec_symbol_table_rec(encrypted, &pass, C, lista, &enc);
 }

@@ -1,3 +1,4 @@
 # Password Cracking
 
-Um programa para testar conhecimentos de técnicas de busca e ordenação
+Um programa para testar conhecimentos de otimização de complexidade assintótica.
+
