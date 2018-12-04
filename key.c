@@ -143,7 +143,23 @@ int compareK(const Key *a, const Key *b)
 bool equal(const Key *a, const Key *b)
 {
 
-    for (int i = 0; i < C; i++)
+    for (int i = C - 1; i >= 0; i--)
+    {
+        if (a->digit[i] != b->digit[i])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool equalN(const Key *a, const Key *b, int n)
+{
+
+    int ini = C - 1;
+    int fim = ini - n;
+    for (int i = ini; i >= fim; i--)
     {
         if (a->digit[i] != b->digit[i])
         {
@@ -202,21 +218,21 @@ int bit_l(unsigned char k, int i)
 // T(C) = R*(2C + T(C - 1))
 //      = R*(C + R*(C - 1 + T(C - 2)))
 //      = R*(C + R*(C - 1 + R*(C - 2 + T(C - 3))))
-void dec_symbol_table_rec(const Key *encrypted, Key *prefix, int pos, Key lista[R][C], Key *sum_anterior)
+void dec_symbol_table_rec(const Key *encrypted, Key prefix, int pos, Key lista[R][C], Key *sum_anterior)
 {
     // Base case: pos é C
     if (pos == 0)
     {
         if (equal(sum_anterior, encrypted))
         {
-            print_key_char(prefix);
+            print_key_char(&prefix);
         }
         return;
     }
     // Adicionar caracteres 1 por 1 e mudar posicao
     for (int i = 0; i < R; ++i) // R*(2C + T(C - 1))
     {
-        prefix->digit[pos - 1] = i;
+        prefix.digit[pos - 1] = i;
 
         Key novo_key = add(sum_anterior, &(lista[i][pos - 1]));
 
@@ -233,5 +249,5 @@ void dec_symbol_table(const Key *encrypted, const Key T[N]) // R*C*N + R*(2C + g
 
     init_lista_key(lista, T); // R*C*N
 
-    dec_symbol_table_rec(encrypted, &pass, C, lista, &enc);
+    dec_symbol_table_rec(encrypted, pass, C, lista, &enc);
 }
