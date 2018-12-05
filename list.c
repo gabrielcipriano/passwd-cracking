@@ -3,14 +3,6 @@
 
 #include "list.h"
 
-/*Estrutura do Nó de lista encadeada.
- *Possui um Value e ponteiros para o próximo nó.
- */
-struct list
-{
-    Value k;
-    struct list *next;
-};
 
 /*Estrutura da Lista. Possui ponteiro para a primeira posição*/
 // struct list
@@ -33,7 +25,7 @@ List *node_init(const Value *k)
 }
 
 /*Insere na lista*/
-List* list_insere(List *list, const Value *k)
+List *list_insere(List *list, const Value *k)
 {
     List *n = node_init(k);
     if (list == NULL)
@@ -61,20 +53,18 @@ void list_free(List *l)
             free(atual);
             atual = next;
         }
-
     }
 }
 
-#include <stdio.h>  
+#include <stdio.h>
 void list_iterate(List *l, void (*visit)(Value *, Value *), Value *opt)
 {
-    if (l != NULL)
+
+    int i = 1;
+    for (List *n = l; n != NULL; n = n->next)
     {
-        int i = 0;
-        for (List *n = l; n != NULL; n = n->next)
-        {
-            printf("%d   ", ++i);
-            visit(&(n->k), opt);
-        }
+        printf("%d   ", i);
+        i++;
+        visit(&(n->k), opt);
     }
 }

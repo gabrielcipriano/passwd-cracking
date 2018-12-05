@@ -75,6 +75,10 @@ int bit(Key *k, int i)
 {
     return (k->digit[i / B] >> (B - 1 - i % B)) & 1;
 }
+int bit_l(unsigned char k, int i)
+{
+    return (k >> (B - 1 - i % B)) & 1;
+}
 
 // Retorna a + b (mod 2^N) .
 Key add(Key *a, Key *b) //C
@@ -121,12 +125,6 @@ void sub(const Key *a, Key *b)
         else
             carry = 0;
     }
-}
-
-int addT(int a, int b)
-{
-    int sum = a + b;
-    return sum % R;
 }
 
 // Add 1 ao item
@@ -192,9 +190,21 @@ bool equal(const Key *a, const Key *b)
     return true;
 }
 
-int bit_l(unsigned char k, int i)
+int compare(const Key *a, const Key *b)
 {
-    return (k >> (B - 1 - i % B)) & 1;
+    for (int i = 0; i < C; i++)
+    {
+        if (a->digit[i] < b->digit[i])
+        {
+            return -1;
+        }
+        if (a->digit[i] > b->digit[i])
+        {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 void init_lista_key(Key(lista[R][C]), Key T[N]) // R*C*N

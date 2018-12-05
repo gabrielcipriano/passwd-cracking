@@ -32,17 +32,18 @@ compara com a senha passada e imprime a senha "descriptografada" se for igual
  *  (decrypt.c).
  *****************************************************************************/
 Coloca o valor relativo de cada caracter numa matriz RxC;
-Calcula todas as possibilidades dos 4 ultimos caracteres em uma TST, por exemplo,
-todas as senhas do formato aaaaxxxx em senhas de 8 digitos.
+Calcula todas as possibilidades dos 4 ultimos caracteres em uma Hash Table, 
+por exemplo, todas as senhas do formato aaaaxxxx em senhas de 8 digitos.
 No resto das possibilidades (senhas no formato xxxxaaaa) subtrai o candidato atual
-da senha passada, o resultado procura na TST, e imprime a soma dos resultados.
+da senha fornecida, o resultado procura na Hash, e imprime a soma do candidato atual
+e da senha encontrada no hash.
 
 /******************************************************************************
  *  Descreva a implementação da tabela de símbolos que você utilizou em
  *  decrypt.c .
  *****************************************************************************/
-Uma Ternary Search Trie (TST) com uma lista encadeada nos nós, na qual a key é
-a senha criptografada.
+Uma Hash Table (Separate Chaining) no qual cada uma das posições é uma BST, 
+na qual a key é a chave criptografada e o value é a chave.
 
 /******************************************************************************
  *  Liste abaixo as versões não criptografadas das senhas fornecidas na
@@ -80,10 +81,10 @@ Tamanho     Tempo (segundos)
 
 Tamanho    Tempo (segundos)    Memória (bytes)
 ----------------------------------------------
- 6         0.031                      6815744
- 8         2.969                  268225740.8
-10         171.859              10155143987.2
-12         19 horas*            13315237478.4 (arvore feita com a permutação de 5 digitos, mais do que isso o swap reduz drasticamente a velocidade)
+ 6         0.031                      1782579
+ 8         1.609                     52428800
+10         65.734                  2214592512
+12         19 horas*               2214592512 (arvore feita com a permutação de 5 digitos, mais do que isso o swap reduz drasticamente a velocidade)
 
 /******************************************************************************
  *  Quantas operações brute.c faz sobre uma senha com N bits?

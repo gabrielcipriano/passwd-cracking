@@ -8,122 +8,51 @@
 #include "key.h"
 #include "list.h"
 #include "tst.h"
-void dec_symbol_table_rec(Key encrypted, Key prefix, int pos, Key lista[R][C], Key sum_anterior)
-{
-    // Base case: pos é C
-    if (pos == 0)
-    {
-        if (equal(&sum_anterior, &encrypted))
-        {
-            print_key_char(&prefix);
-        }
-        return;
-    }
-    // Adicionar caracteres 1 por 1 e mudar posicao
-    for (int i = 0; i < R; ++i) // R*(2C + T(C - 1))
-    {
-        prefix.digit[pos - 1] = i;
+#include "list.1.h"
+#include "tree.h"
+#include "hash.h"
 
-        Key novo_key = add(&sum_anterior, &(lista[i][pos - 1]));
-
-        dec_symbol_table_rec(encrypted, prefix, pos - 1, lista, novo_key);
-    }
-}
-
-void dec_symbol_table(Key encrypted, Key T[N]) // R*C*N + R*(2C + g(C - 1))
-{
-    Key pass = {{0}};
-    Key enc = {{0}};
-
-    Key lista[R][C];
-
-    init_lista_key(lista, T); // R*C*N
-
-    dec_symbol_table_rec(encrypted, pass, C, lista, enc);
-}
-
-typedef struct
-{
-    int tam;
-    TST **hash;
-} Hash_table;
-
-Hash_table *hash_init(int tam)
-{
-    Hash_table *h = malloc(sizeof(*h));
-    h->tam = tam;
-    h->hash = malloc(sizeof(*(h->hash)) * tam);
-    for (int i = 0; i < h->tam; i++)
-    {
-        h->hash[i] = TST_create();
-    }
-    return h;
-}
-
-int horner(Key *s, int m)
-{
-    int h = 0;
-    for (int i = 0; i < C; i++)
-    {
-        h = (251 * h + (s->digit[i])) % m;
-    }
-    return h;
-}
-
-void hash_insert(Hash_table *h, Key *k, Value *v)
-{
-    int hash = horner(k, h->tam);
-
-    TST_insert(h->hash[hash], v, k);
-}
-
-List *hash_search(Hash_table *h, Key *k)
-{
-    int hash = horner(k, h->tam);
-    List *l = TST_search(h->hash[hash], k);
-    return l;
-}
-
-void hash_destroy(Hash_table *h)
-{
-    if (h != NULL)
-    {
-        for (int i = 0; i < h->tam; i++)
-        {
-            TST_destroy(h->hash[i]);
-        }
-        free(h->hash);
-        free(h);
-    }
-}
-
-void dec_symbol_table3(Key *encrypted, Key T[N])
+void dec_symbol_table2(Key *encrypted, Key T[N])
 {
     Key lista[R][C];
 
     init_lista_key(lista, T); // R*C*N
 
     Key k = {{0}};
-
-    int tam = pow(R, C / 2) / 4;
+    int maximum = C / 2;
+    unsigned long tam;
+    if (maximum > 5)
+    {
+        tam = pow(R, 5) / 4;
+        maximum = C - 5;
+    }
+    else
+    {
+        tam = pow(R, C / 2) / 4;
+    }
 
     Hash_table *h = hash_init(tam);
+    printf("t\n");
 
-    while (k.digit[C / 2 - 1] == 0)
+    while (k.digit[maximum - 1] == 0)
     {
         Key passwordEncrypted = {{0}};
-        for (int p = C - 1; p >= C / 2; p--)
+        for (int p = 0; p < C; p++)
         {
-            add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
+            if (k.digit[p] != 0)
+                add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
         }
-        hash_insert(h, &k, &passwordEncrypted);
+
+        hash_insert(h, &passwordEncrypted, &k);
         add1(&k);
     }
 
-    List *l = hash_search(h, encrypted);
+    Value *l = hash_search(h, encrypted);
 
     Key zero = {{0}};
-    list_iterate(l, print_key_char_soma, &zero);
+    if (l != NULL)
+        print_key_char_soma(l, &zero);
+    // list_iterate(l, print_key_char_soma, &zero);
 
     Key maximo = k;
     do
@@ -131,44 +60,34 @@ void dec_symbol_table3(Key *encrypted, Key T[N])
         Key passwordEncrypted = {{0}};
         for (int p = 0; p < C; p++)
         {
-            add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
+            if (k.digit[p] != 0)
+                add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
         }
 
         sub(encrypted, &passwordEncrypted);
 
         l = hash_search(h, &passwordEncrypted);
-
-        list_iterate(l, print_key_char_soma, &k);
+        if (l != NULL)
+        {
+            print_key_char_soma(l, &k);
+        }
 
         add_onfirst(&k, &maximo);
     } while (!equal(&zero, &k));
-
+    sleep(3);
     hash_destroy(h);
 }
 
-#define max 4
+// hash(senha) = hash(a) + hash(b) + hash(c);
+// tst = hash(a);
+// tst2 = hash(b);
+// hash(a) = hash(senha) - hash(b) - hash(c);
+// hash(b) = hash(senha) - hash(a) - hash(c);
+// hash(b) = hash(senha) - hash(c);
 
-//      = R*(C + R*(C - 1 + R*(C - 2 + T(C - 3))))
-void dec_symbol_table2_rec(int maximum, Key prefix, int pos, Key lista[R][C], Key sum_anterior, TST **tst)
-{
-    // Base case: pos é C
-    if (pos == maximum)
-    {
-        *tst = TST_insert(*tst, &sum_anterior, &prefix);
-        return;
-    }
-    // Adicionar caracteres 1 por 1 e mudar posicao
-    for (int i = 0; i < R; ++i) // R*(2C + T(C - 1))
-    {
-        prefix.digit[pos - 1] = i;
+//hash(a) = hash(senha) - hash(senha) + hash(c) - hash(c)
 
-        Key novo_key = add(&sum_anterior, &(lista[i][pos - 1]));
-
-        dec_symbol_table2_rec(maximum, prefix, pos - 1, lista, novo_key, tst);
-    }
-}
-
-void dec_symbol_table2(const Key *encrypted, Key T[N])
+void dec_symbol_table(const Key *encrypted, Key T[N])
 {
 
     Key lista[R][C];
@@ -179,40 +98,38 @@ void dec_symbol_table2(const Key *encrypted, Key T[N])
     TST *tst = TST_create();
 
     int maximum = C / 2;
-    if (maximum > 5)
+
+    if (maximum > 4)
     {
-        maximum = C - 5;
+        maximum = C - 4;
     }
 
     // dec_symbol_table2_rec(maximum, k, C, lista, k, &tst);
-
     while (k.digit[maximum - 1] == 0)
     {
         Key passwordEncrypted = {{0}};
-        for (int p = C - 1; p >= maximum; p--)
+        for (int p = 0; p < C; p++)
         {
             if (k.digit[p] != 0)
                 add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
         }
+
         tst = TST_insert(tst, &passwordEncrypted, &k);
         add1(&k);
     }
 
-
     List *l = TST_search(tst, encrypted);
 
     Key zero = {{0}};
-    list_iterate(l, print_key_char_soma, &zero);
+    if (l != NULL)
+        list_iterate(l, print_key_char_soma, &zero);
 
-    //Key passwordEncrypted = {{0}};
-
-    //  dec_symbol_table2_rec(encrypted, k, maximum, lista, passwordEncrypted, tst);
-    Key maximo = k;
+    Key atual = k;
 
     do
     {
         Key passwordEncrypted = {{0}};
-        for (int p = 0; p < maximum; p++)
+        for (int p = 0; p < C; p++)
         {
             if (k.digit[p] != 0)
                 add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
@@ -221,8 +138,13 @@ void dec_symbol_table2(const Key *encrypted, Key T[N])
         sub(encrypted, &passwordEncrypted);
 
         l = TST_search(tst, &passwordEncrypted);
-        list_iterate(l, print_key_char_soma, &k);
-        add_onfirst(&k, &maximo);
+        if (l != NULL)
+        {
+            list_iterate(l, print_key_char_soma, &k);
+            print_key(&passwordEncrypted);
+            printf("\n");
+        }
+        add_onfirst(&k, &atual);
     } while (!equal(&zero, &k));
     TST_destroy(tst);
 }

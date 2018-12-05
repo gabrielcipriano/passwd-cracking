@@ -1,6 +1,14 @@
 #include "key.h"
 #ifndef LIST_HEADER_H_INCLUDED
 #define LIST_HEADER_H_INCLUDED
+/*Estrutura do Nó de lista encadeada.
+ *Possui um Value e ponteiros para o próximo nó.
+ */
+struct list
+{
+    Value k;
+    struct list *next;
+};
 
 typedef struct list List;
 

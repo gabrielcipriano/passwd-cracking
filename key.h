@@ -4,12 +4,12 @@
 #ifndef KEY_H
 #define KEY_H
 
-#define C 12 // Número de caracteres na senha.
+#define C 12        // Número de caracteres na senha.
 #define B 5        // Número de bits por caractere.
 #define R (1 << B) // Tamanho do alfabeto (sempre = 32).
 #define N (B * C)  // Número de bits por senha.
 
-#define ALPHABET "abcdefghijklmnopqrstuvwxyz012345" 
+#define ALPHABET "abcdefghijklmnopqrstuvwxyz012345"
 
 // Um inteiro módulo R formado por C dígitos. O array está contido
 // dentro de uma estrutura para facilitar a gerência de memória e
@@ -45,6 +45,8 @@ void sub(const Key *a, Key *b);
 
 // Verifica que duas senhas são iguais
 bool equal(const Key *a, const Key *b);
+
+int compare(const Key *a, const Key *b);
 
 // Soma (módulo 2^N) e retorna o subconjunto dos inteiros T[i] que
 // são indexados pelos bits de k.

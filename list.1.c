@@ -6,16 +6,13 @@
 /*Inicializa a lista, alocando memória e inicializa os ponteiros*/
 List1 *list_init1()
 {
-    List1 *l = malloc(sizeof(*l));
 
-    l->first = NULL;
-
-    return l;
+    return NULL;
 }
 /*Inicializa o nó, alocando memória e inicializando os ponteiros*/
-Node1 *node_init1(Value *v, Key *k)
+List1 *node_init1(Value *v, Key *k)
 {
-    Node1 *n = malloc(sizeof(*n));
+    List1 *n = malloc(sizeof(*n));
     n->k = *k;
     n->v = *v;
     n->next = NULL;
@@ -23,26 +20,27 @@ Node1 *node_init1(Value *v, Key *k)
 }
 
 /*Insere na lista*/
-void list_insere1(List1 *list, Value *v, Key *k)
+List1 *list_insere1(List1 *list, Value *v, Key *k)
 {
-    Node1 *n = node_init1(v, k);
-    if (list->first == NULL)
+    List1 *n = node_init1(v, k);
+    if (list == NULL)
     {
-        list->first = n;
+        list = n;
     }
     else
     {
-        n->next = list->first;
-        list->first = n;
+        n->next = list;
+        list = n;
     }
+    return list;
 }
 /*Libera a memória*/
 void list_free1(List1 *l)
 {
     if (l != NULL)
     {
-        Node1 *atual = l->first;
-        Node1 *next = NULL;
+        List1 *atual = l;
+        List1 *next = NULL;
         while (atual != NULL)
         {
             next = atual->next;
@@ -56,11 +54,9 @@ void list_free1(List1 *l)
 
 void list_iterate1(List1 *l, void (*visit)(Value *, Value *), Value *opt)
 {
-    if (l != NULL)
+
+    for (List1 *n = l; n != NULL; n = n->next)
     {
-        for (Node1 *n = l->first; n != NULL; n = n->next)
-        {
-            visit(&(n->v), opt);
-        }
+        visit(&(n->v), opt);
     }
 }
