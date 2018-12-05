@@ -1,6 +1,6 @@
 
 enc:
-	gcc -Wall list.c tst.c key.c encrypt.c -o encrypt -g
+	gcc -Wall key.c encrypt.c -o encrypt -g
 	
 dec:
 	gcc -Wall list.c tst.c key.c decrypt.c -o decrypt -g

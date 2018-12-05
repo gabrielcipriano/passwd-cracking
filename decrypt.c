@@ -3,6 +3,8 @@
 #include <time.h>
 #include <math.h>
 
+#include <unistd.h>
+
 #include "key.h"
 #include "list.h"
 #include "tst.h"
@@ -169,7 +171,6 @@ void dec_symbol_table2_rec(int maximum, Key prefix, int pos, Key lista[R][C], Ke
 void dec_symbol_table2(const Key *encrypted, Key T[N])
 {
 
-    clock_t tic = clock();
     Key lista[R][C];
 
     init_lista_key(lista, T); // R*C*N
@@ -197,9 +198,6 @@ void dec_symbol_table2(const Key *encrypted, Key T[N])
         add1(&k);
     }
 
-    clock_t toc = clock();
-
-    printf("Tempo: %.3f segundos\n", (double)(toc - tic) / CLOCKS_PER_SEC);
 
     List *l = TST_search(tst, encrypted);
 
@@ -226,7 +224,6 @@ void dec_symbol_table2(const Key *encrypted, Key T[N])
         list_iterate(l, print_key_char_soma, &k);
         add_onfirst(&k, &maximo);
     } while (!equal(&zero, &k));
-
     TST_destroy(tst);
 }
 

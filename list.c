@@ -65,12 +65,15 @@ void list_free(List *l)
     }
 }
 
+#include <stdio.h>  
 void list_iterate(List *l, void (*visit)(Value *, Value *), Value *opt)
 {
     if (l != NULL)
     {
+        int i = 0;
         for (List *n = l; n != NULL; n = n->next)
         {
+            printf("%d   ", ++i);
             visit(&(n->k), opt);
         }
     }
