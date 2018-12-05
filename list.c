@@ -6,58 +6,55 @@
 /*Estrutura do Nó de lista encadeada.
  *Possui um Value e ponteiros para o próximo nó.
  */
-struct node
-{
-    Value k;
-    struct node *next;
-};
-
-typedef struct node Node;
-/*Estrutura da Lista. Possui ponteiro para a primeira posição*/
 struct list
 {
-    Node *first;
+    Value k;
+    struct list *next;
 };
 
-/*Inicializa a lista, alocando memória e inicializa os ponteiros*/
+/*Estrutura da Lista. Possui ponteiro para a primeira posição*/
+// struct list
+// {
+//     Node *first;
+// };
+
+/*Inicializa a lista*/
 List *list_init()
 {
-    List *l = malloc(sizeof(*l));
-
-    l->first = NULL;
-
-    return l;
+    return NULL;
 }
 /*Inicializa o nó, alocando memória e inicializando os ponteiros*/
-Node *node_init(const Value *k)
+List *node_init(const Value *k)
 {
-    Node *n = malloc(sizeof(*n));
+    List *n = malloc(sizeof(*n));
     n->k = *k;
     n->next = NULL;
     return n;
 }
 
 /*Insere na lista*/
-void list_insere(List *list, const Value *k)
+List* list_insere(List *list, const Value *k)
 {
-    Node *n = node_init(k);
-    if (list->first == NULL)
+    List *n = node_init(k);
+    if (list == NULL)
     {
-        list->first = n;
+        list = n;
     }
     else
     {
-        n->next = list->first;
-        list->first = n;
+        n->next = list;
+        list = n;
     }
+
+    return list;
 }
 /*Libera a memória*/
 void list_free(List *l)
 {
     if (l != NULL)
     {
-        Node *atual = l->first;
-        Node *next = NULL;
+        List *atual = l;
+        List *next = NULL;
         while (atual != NULL)
         {
             next = atual->next;
@@ -65,7 +62,6 @@ void list_free(List *l)
             atual = next;
         }
 
-        free(l);
     }
 }
 
@@ -73,7 +69,7 @@ void list_iterate(List *l, void (*visit)(Value *, Value *), Value *opt)
 {
     if (l != NULL)
     {
-        for (Node *n = l->first; n != NULL; n = n->next)
+        for (List *n = l; n != NULL; n = n->next)
         {
             visit(&(n->k), opt);
         }

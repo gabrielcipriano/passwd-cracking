@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     }
 
     // Calcula a soma de subconjunto.
-    encrypted = subset_sum(&password, T);
+    encrypted = subset_sum(password, T);
 
     // Exibe o resultado.
     printf("\n   ");

@@ -13,7 +13,7 @@ void TST_destroy(TST *t)
     {
         return;
     }
-     list_free(t->val);
+    list_free(t->val);
     TST_destroy(t->l);
     TST_destroy(t->m);
     TST_destroy(t->r);
@@ -23,7 +23,7 @@ void TST_destroy(TST *t)
 TST *create_node()
 {
     TST *t = malloc(sizeof *t);
-    t->val = list_init();
+    t->val = NULL;
     t->l = NULL;
     t->m = NULL;
     t->r = NULL;
@@ -53,7 +53,7 @@ TST *rec_insert(TST *t, const Key *key, const Value *val, int d)
     else
     {
         // t->val = *val;
-        list_insere(t->val, val);
+        t->val = list_insere(t->val, val);
     }
     return t;
 }

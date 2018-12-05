@@ -147,15 +147,12 @@ void dec_symbol_table3(Key *encrypted, Key T[N])
 #define max 4
 
 //      = R*(C + R*(C - 1 + R*(C - 2 + T(C - 3))))
-void dec_symbol_table2_rec(const Key *encrypted, Key prefix, int pos, Key lista[R][C], Key sum_anterior, TST *tst)
+void dec_symbol_table2_rec(int maximum, Key prefix, int pos, Key lista[R][C], Key sum_anterior, TST **tst)
 {
     // Base case: pos é C
-    if (pos == 0)
+    if (pos == maximum)
     {
-        sub(encrypted, &sum_anterior);
-
-        List *l = TST_search(tst, &sum_anterior);
-        list_iterate(l, print_key_char_soma, &prefix);
+        *tst = TST_insert(*tst, &sum_anterior, &prefix);
         return;
     }
     // Adicionar caracteres 1 por 1 e mudar posicao
@@ -165,12 +162,14 @@ void dec_symbol_table2_rec(const Key *encrypted, Key prefix, int pos, Key lista[
 
         Key novo_key = add(&sum_anterior, &(lista[i][pos - 1]));
 
-        dec_symbol_table2_rec(encrypted, prefix, pos - 1, lista, novo_key, tst);
+        dec_symbol_table2_rec(maximum, prefix, pos - 1, lista, novo_key, tst);
     }
 }
 
 void dec_symbol_table2(const Key *encrypted, Key T[N])
 {
+
+    clock_t tic = clock();
     Key lista[R][C];
 
     init_lista_key(lista, T); // R*C*N
@@ -178,15 +177,18 @@ void dec_symbol_table2(const Key *encrypted, Key T[N])
     Key k = {{0}};
     TST *tst = TST_create();
 
-   // int maximum = C / 2;
-    // if (maximum > max)
-    // {
-    //     maximum = C - max;
-    // }
-    while (k.digit[C / 2 - 1] == 0)
+    int maximum = C / 2;
+    if (maximum > 5)
+    {
+        maximum = C - 5;
+    }
+
+    // dec_symbol_table2_rec(maximum, k, C, lista, k, &tst);
+
+    while (k.digit[maximum - 1] == 0)
     {
         Key passwordEncrypted = {{0}};
-        for (int p = C - 1; p >= C / 2; p--)
+        for (int p = C - 1; p >= maximum; p--)
         {
             if (k.digit[p] != 0)
                 add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
@@ -194,6 +196,10 @@ void dec_symbol_table2(const Key *encrypted, Key T[N])
         tst = TST_insert(tst, &passwordEncrypted, &k);
         add1(&k);
     }
+
+    clock_t toc = clock();
+
+    printf("Tempo: %.3f segundos\n", (double)(toc - tic) / CLOCKS_PER_SEC);
 
     List *l = TST_search(tst, encrypted);
 
@@ -208,7 +214,7 @@ void dec_symbol_table2(const Key *encrypted, Key T[N])
     do
     {
         Key passwordEncrypted = {{0}};
-        for (int p = 0; p < C / 2; p++)
+        for (int p = 0; p < maximum; p++)
         {
             if (k.digit[p] != 0)
                 add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));

@@ -8,7 +8,7 @@ typedef struct list List;
 List *list_init();
 
 // Insere na lista
-void list_insere(List *list,const Value *k);
+List *list_insere(List *list, const Value *k);
 
 // Libera a lista
 void list_free(List *l);
