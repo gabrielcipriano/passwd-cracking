@@ -1,0 +1,1 @@
+./decrypt oykcetketn < in/rand10.txt; ./decrypt bkzlquxfnt < in/rand10.txt; ./decrypt wixxliygk1 < in/rand10.txt; 

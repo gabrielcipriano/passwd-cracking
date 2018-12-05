@@ -21,15 +21,16 @@ Número de horas gastas para fazer o trabalho (aproximado): 30
 /******************************************************************************
  *  Descreva a sua solução força bruta (brute.c) .
  *****************************************************************************/
-Itera por todas as possibilidades, em cada uma delas chama a função de criptografar
-e compara com a senha passada.
+Itera por todas as possibilidades, em cada uma delas chama a função de criptografar, 
+compara com a senha passada e imprime a senha "descriptografada" se for igual
 
 /******************************************************************************
  *  Faça uma descrição de alto nível do seu programa de quebra de senha
  *  (decrypt.c).
  *****************************************************************************/
-Gera uma matriz de valores pra cada caracter do alfabeto em posição relativa, dado que a soma é associativa e comutativa.
-Itera 
+Coloca o valor relativo de cada caracter numa matriz RxC;
+Recursivamente soma o valor anterior com o valor do caracter R na posição C;
+No caso base compara a senha gerada com a passada e imprime a senha "descriptografada" se for igual
 
 /******************************************************************************
  *  Descreva a implementação da tabela de símbolos que você utilizou em

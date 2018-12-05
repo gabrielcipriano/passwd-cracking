@@ -1,5 +1,0 @@
-cat key.1.h | sed -re 's/C 4/C 5/' > key.1.h
-
-make enc
-
-./encrypt pass < in/rand

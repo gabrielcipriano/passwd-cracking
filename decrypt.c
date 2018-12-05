@@ -5,8 +5,8 @@
 
 int main(int argc, char *argv[])
 {
-    Key encrypted; // A senha criptografada.
-    Key T[N];      // A tabela T.
+    Key *encrypted; // A senha criptografada.
+    Key *T[N];      // A tabela T.
 
     if (argc != 2)
     {
@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     encrypted = init_key((unsigned char *)argv[1]);
     // Exibe a senha encriptada.
     printf("   ");
-    print_key(&encrypted);
+    print_key(encrypted);
     printf("\n");
 
     // Lê a tabela T.
@@ -28,10 +28,11 @@ int main(int argc, char *argv[])
         T[i] = init_key(buffer);
     }
     // Força bruta
-    clock_t tic = clock();
-    dec_symbol_table(&encrypted, T);
-    clock_t toc = clock();
-
-    printf("Tempo: %.3f segundos\n", (double)(toc - tic) / CLOCKS_PER_SEC);
+    dec_symbol_table2(encrypted, T);
+    free(encrypted);
+    for (int i = 0; i < N; i++)
+    {
+        free(T[i]);
+    }
     return 0;
 }

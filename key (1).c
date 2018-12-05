@@ -28,16 +28,16 @@ Key init_key(unsigned char s[])
 }
 
 // Exibe a chave 'k' em stdout em três formatos: chars, ints (base R) e binário.
-void print_key(Key k)
+void print_key(Key *k)
 {
     for (int i = 0; i < C; i++)
     {
-        printf("%c", ALPHABET[k.digit[i]]);
+        printf("%c", ALPHABET[k->digit[i]]);
     }
     printf("  ");
     for (int i = 0; i < C; i++)
     {
-        printf("%2d ", k.digit[i]);
+        printf("%2d ", k->digit[i]);
     }
     printf("  ");
     for (int i = 0; i < N; i++)
@@ -58,9 +58,9 @@ void print_key_char(Key k)
 }
 
 // Retorna o i-ésimo bit de k.
-int bit(Key k, int i)
+int bit(Key* k, int i)
 {
-    return (k.digit[i / B] >> (B - 1 - i % B)) & 1;
+    return (k->digit[i / B] >> (B - 1 - i % B)) & 1;
 }
 
 // Retorna a + b (mod 2^N) .
@@ -149,7 +149,7 @@ void dec_forca_bruta(Key encrypted, Key T[N])
     for (int i = 0; i < C; i++)
     {
         k.digit[i] = 0;
-    } 
+    }
     for (int i = 0; i < C; i++)
     {
         a.digit[i] = 0;
@@ -158,7 +158,7 @@ void dec_forca_bruta(Key encrypted, Key T[N])
     double tam = pow(R, C);
     for (double i = 0; i < tam; i++)
     {
-            print_key(k);
+        print_key(k);
         Key passwordEncrypted = subset_sum(k, T);
         if (compare(encrypted, passwordEncrypted) == 0)
         {
