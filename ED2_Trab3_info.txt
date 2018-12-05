@@ -6,15 +6,18 @@
 Nome 1: 
 Nome 2:
 SO utilizado: Bash on Ubuntu 16.04 - Windows 10 1709
-Versão do compilador utilizado: gcc version 5.4.0
+Versão do compilador utilizado: gcc version 7.3.0
 Editor(es) de código utilizado(s): Visual Studio Code 
-Número de horas gastas para fazer o trabalho (aproximado): 30
+Número de horas gastas para fazer o trabalho (aproximado): 50
 
 /******************************************************************************
  *  Se você usou o arquivo key.c, descreva qualquer modificação/otimização que
  *  você tenha feito no código. Se você não utilizou key.c, descreva a
  *  estrutura de dados que você utilizou para manipular as senhas.
  *****************************************************************************/
+Funções como print_key e bit os parametros foram colocados como ponteiros, para
+evitar a cópia da estrutura completa a cada momento.
+Adicionado um pré processamento dos caracteres em cada posição relativa na palavra
 
 
 
@@ -29,14 +32,17 @@ compara com a senha passada e imprime a senha "descriptografada" se for igual
  *  (decrypt.c).
  *****************************************************************************/
 Coloca o valor relativo de cada caracter numa matriz RxC;
-Recursivamente soma o valor anterior com o valor do caracter R na posição C;
-No caso base compara a senha gerada com a passada e imprime a senha "descriptografada" se for igual
+Calcula todas as possibilidades dos 4 ultimos caracteres em uma TST, por exemplo,
+todas as senhas do formato aaaaxxxx em senhas de 8 digitos.
+No resto das possibilidades (senhas no formato xxxxaaaa) subtrai o candidato atual
+da senha passada, o resultado procura na TST, e imprime a soma dos resultados.
 
 /******************************************************************************
  *  Descreva a implementação da tabela de símbolos que você utilizou em
  *  decrypt.c .
  *****************************************************************************/
-
+Uma Ternary Search Trie (TST) com uma lista encadeada nos nós, na qual a key é
+a senha criptografada.
 
 /******************************************************************************
  *  Liste abaixo as versões não criptografadas das senhas fornecidas na
@@ -46,7 +52,10 @@ No caso base compara a senha gerada com a passada e imprime a senha "descriptogr
 
 8 caracteres         10 caracteres          12 caracteres
 ------------         -------------          -------------
-
+congrats             completely
+youfound             unbreakabl
+theright             cryptogram
+solution             ormaybenot
 
 /******************************************************************************
  *  Quanto tempo a versão força bruta leva para quebrar as senhas de um dado
@@ -57,10 +66,10 @@ No caso base compara a senha gerada com a passada e imprime a senha "descriptogr
 
 Tamanho     Tempo (segundos)
 ----------------------------
- 4 0.344 segundos
- 5 19.156 segundos
- 6
- 8
+ 4          0.109
+ 5          5.359
+ 6          231.828
+ 8          6 dias* (o tempo aumenta em aproximadamente 45 vezes por char)
 
 /******************************************************************************
  *  Quanto tempo decrypt.c leva para quebrar as senhas de um dado tamanho?
@@ -71,10 +80,10 @@ Tamanho     Tempo (segundos)
 
 Tamanho    Tempo (segundos)    Memória (bytes)
 ----------------------------------------------
- 6
- 8
-10
-12
+ 6         0.062                     10485760
+ 8         3.688                    423624704
+10         1451.859                 590348288 (arvore feita com a permutação de 4 digitos)
+12         16 horas*(40x por 2 c)   758644736 (arvore feita com a permutação de 4 digitos)
 
 /******************************************************************************
  *  Quantas operações brute.c faz sobre uma senha com N bits?

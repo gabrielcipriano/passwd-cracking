@@ -4,6 +4,27 @@
 #include <time.h>
 #include "key.h"
 
+// Lista todas as possíveis senhas com um algoritmo de força bruta
+void dec_forca_bruta(const Key *encrypted, Key T[N]) // ((R^C) * (B*C² + 2C)
+{
+    Key k = {{0}};
+
+    // Quantidade de combinações
+    Key zero = {{0}};
+    Key lista[R][C];
+    init_lista_key(lista, T);
+    do
+    {
+        Key passwordEncrypted = subset_sum_custom(&k, lista);
+
+        if (equal(encrypted, &passwordEncrypted)) //C obrigatorio
+        {
+            print_key_char(&k);
+        }
+        add1(&k);                //C
+    } while (!equal(&k, &zero)); //C
+}
+
 int main(int argc, char *argv[])
 {
     Key encrypted; // A senha criptografada.
