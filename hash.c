@@ -29,7 +29,7 @@ unsigned long horner(Key *s, unsigned long m)
   return h;
 }
 #include <stdio.h>
-void hash_insert(Hash_table *h, Key *k, Value *v)
+void hash_insert(Hash_table *h, Key *k, Key_custom *v)
 {
   unsigned long hash = horner(k, h->tam);
 
@@ -47,11 +47,11 @@ void hash_insert(Hash_table *h, Key *k, Value *v)
   // }
 }
 
-Value *hash_search(Hash_table *h, bool (*fn)(const Key *, const Key *), Key *k)
+Item *hash_search(Hash_table *h, bool (*fn)(const Key *, const Key *), Key *k)
 {
   unsigned long hash = horner(k, h->tam);
 
-  Value *v = list_search(h->hash[hash], fn, k);
+  Item *i = list_search(h->hash[hash], fn, k);
 
   // {
   //   if (hash == 90483)
@@ -65,7 +65,7 @@ Value *hash_search(Hash_table *h, bool (*fn)(const Key *, const Key *), Key *k)
   //     }
   //   }
   // }
-  return v;
+  return i;
 }
 
 void hash_destroy(Hash_table *h)

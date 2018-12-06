@@ -4,7 +4,8 @@
 #ifndef KEY_H
 #define KEY_H
 
-#define C 10       // Número de caracteres na senha.
+#define C 10 // Número de caracteres na senha.
+#define C_CUSTOM (C / 2)
 #define B 5        // Número de bits por caractere.
 #define R (1 << B) // Tamanho do alfabeto (sempre = 32).
 #define N (B * C)  // Número de bits por senha.
@@ -19,6 +20,11 @@ typedef struct
     unsigned char digit[C];
 } Key;
 
+typedef struct
+{
+    unsigned char digit[C_CUSTOM];
+} Key_custom;
+
 typedef Key Value;
 
 // Inicializa e retorna uma chave a partir do vetor de char dado.
@@ -28,11 +34,13 @@ Key *init_key_ptr(Key *s);
 
 // Exibe a chave 'k' em stdout em três formatos: chars, ints (base R) e binário.
 void print_key(Key *k);
+void print_key_custom(Key_custom *k);
 
 // Exibe a chave 'k' em stdout somente no formato de chars.
 void print_key_char(Key *k);
 
 void print_key_char_soma(Key *a, Key *b);
+void print_key_char_soma_custom(Key_custom *a, Key_custom *b);
 
 // Retorna o i-ésimo bit de k.
 int bit(Key *k, int i);
@@ -40,12 +48,15 @@ int bit_l(unsigned char k, int i);
 
 // Retorna a + b (mod 2^N) .
 Key add(Key *a, Key *b);
+Key add_custom(Key_custom *a, Key_custom *b);
 void add1(Key *a);
+void add1_custom(Key_custom *a);
 void add_onfirst(Key *a, const Key *b);
 void sub(const Key *a, Key *b);
 
 // Verifica que duas senhas são iguais
 bool equal(const Key *a, const Key *b);
+bool equal_custom(const Key_custom *a, const Key_custom *b);
 
 int compare(const Key *a, const Key *b);
 

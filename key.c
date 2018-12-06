@@ -65,6 +65,21 @@ void print_key(Key *k)
     printf("\n");
 }
 
+void print_key_custom(Key_custom *k)
+{
+
+    for (int i = 0; i < C_CUSTOM; i++)
+    {
+        printf("%c", ALPHABET[(unsigned char)(k->digit[i])]);
+    }
+    printf("  ");
+    for (int i = 0; i < C_CUSTOM; i++)
+    {
+        printf("%2d ", k->digit[i]);
+    }
+
+    printf("\n");
+}
 // Exibe a chave 'k' em stdout somente no formato de chars.
 void print_key_char(Key *k)
 {
@@ -81,6 +96,17 @@ void print_key_char_soma(Key *a, Key *b)
     Key k = add(a, b);
     for (int i = 0; i < C; i++)
     {
+        printf("%c", ALPHABET[(unsigned char)(k.digit[i])]);
+    }
+    printf("\n");
+}
+
+void print_key_char_soma_custom(Key_custom *a, Key_custom *b)
+{
+    Key k = add_custom(a, b);
+    for (int i = 0; i < C; i++)
+    {
+
         printf("%c", ALPHABET[(unsigned char)(k.digit[i])]);
     }
     printf("\n");
@@ -106,6 +132,30 @@ Key add(Key *a, Key *b) //C
         int sum = a->digit[i] + b->digit[i] + carry;
         c.digit[i] = sum % R;
         carry = sum >= R;
+    }
+    return c;
+}
+
+// Retorna a + b (mod 2^N) .
+Key add_custom(Key_custom *a, Key_custom *b) //C
+{
+    Key c = {{0}};
+    int carry = 0;
+    int p = C - 1;
+    for (int i = C_CUSTOM - 1; i >= 0; i--)
+    {
+        int sum = b->digit[i] + carry;
+        c.digit[p] = sum % R;
+        carry = sum >= R;
+        p--;
+    }
+
+    for (int i = C_CUSTOM - 1; i >= 0; i--)
+    {
+        int sum = a->digit[i] + carry;
+        c.digit[p] = sum % R;
+        carry = sum >= R;
+        p--;
     }
     return c;
 }
@@ -159,6 +209,22 @@ void add1(Key *a)
         i--;
     }
 }
+// Add 1 ao item
+void add1_custom(Key_custom *a)
+{
+    int sum = a->digit[C_CUSTOM - 1] + 1;
+
+    a->digit[C_CUSTOM - 1] = sum % R;
+    int carry = sum >= R;
+    int i = C_CUSTOM - 2;
+    while (i >= 0 && carry != 0)
+    {
+        sum = a->digit[i] + carry;
+        a->digit[i] = sum % R;
+        carry = sum >= R;
+        i--;
+    }
+}
 
 // Soma (módulo 2^N) e retorna o subconjunto dos inteiros T[i] que
 // são indexados pelos bits de k.
@@ -196,6 +262,19 @@ bool equal(const Key *a, const Key *b)
 {
 
     for (int i = C - 1; i >= 0; i--)
+    {
+        if (a->digit[i] != b->digit[i])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+bool equal_custom(const Key_custom *a, const Key_custom *b)
+{
+
+    for (int i = C_CUSTOM - 1; i >= 0; i--)
     {
         if (a->digit[i] != b->digit[i])
         {

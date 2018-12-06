@@ -53,7 +53,7 @@ na qual a key é a chave criptografada e o value é a chave.
 
 8 caracteres         10 caracteres          12 caracteres
 ------------         -------------          -------------
-congrats             completely
+congrats             completely             emailwaynecs
 youfound             unbreakabl
 theright             cryptogram
 solution             ormaybenot
@@ -81,10 +81,10 @@ Tamanho     Tempo (segundos)
 
 Tamanho    Tempo (segundos)    Memória (bytes)
 ----------------------------------------------
- 6         0.031                      1782579
- 8         1.609                     52428800
-10         65.734                  2214592512
-12         19 horas*               2214592512 (arvore feita com a permutação de 5 digitos, mais do que isso o swap reduz drasticamente a velocidade)
+ 6         0.031                      1258291
+ 8         1.328                     35651584
+10         62.156                  1140850688
+12         7 horas*               2214592512 (arvore feita com a permutação de 5 digitos, mais do que isso o swap reduz drasticamente a velocidade)
 
 /******************************************************************************
  *  Quantas operações brute.c faz sobre uma senha com N bits?
