@@ -21,19 +21,17 @@ void dec_symbol_table2(Key *encrypted, Key T[N])
     Key k = {{0}};
     int maximum = C / 2;
     unsigned long tam;
-    if (maximum > 5)
-    {
-        tam = pow(R, 5) / 4;
-        maximum = C - 5;
-    }
-    else
-    {
-        tam = pow(R, C / 2) / 4;
-    }
+    // if (maximum > 5)
+    // {
+    tam = pow(R, maximum) / 4;
+    //     maximum = C - 4;
+    // }
+    // else
+    // {
+    //     tam = pow(R, C / 2) / 4;
+    // }
 
     Hash_table *h = hash_init(tam);
-    printf("t\n");
-
     while (k.digit[maximum - 1] == 0)
     {
         Key passwordEncrypted = {{0}};
@@ -42,12 +40,16 @@ void dec_symbol_table2(Key *encrypted, Key T[N])
             if (k.digit[p] != 0)
                 add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
         }
+        Key *k_ptr = init_key_ptr(&k);
+        Key *password_ptr = init_key_ptr(&passwordEncrypted);
 
-        hash_insert(h, &passwordEncrypted, &k);
+        hash_insert(h, password_ptr, k_ptr);
         add1(&k);
     }
 
-    Value *l = hash_search(h, encrypted);
+    printf("t\n");
+
+    Value *l = hash_search(h, equal, encrypted);
 
     Key zero = {{0}};
     if (l != NULL)
@@ -55,6 +57,33 @@ void dec_symbol_table2(Key *encrypted, Key T[N])
     // list_iterate(l, print_key_char_soma, &zero);
 
     Key maximo = k;
+
+    // Hash_table *h2 = hash_init(tam);
+
+    // while (k.digit[C - 6 - 1] == 0)
+    // {
+    //     Key passwordEncrypted = {{0}};
+    //     for (int p = 0; p < C; p++)
+    //     {
+    //         if (k.digit[p] != 0)
+    //             add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
+    //     }
+    //     Key *k_ptr = init_key_ptr(&k);
+    //     Key *password_ptr = init_key_ptr(&passwordEncrypted);
+
+    //     hash_insert(h2, password_ptr, k_ptr);
+    //     sub(encrypted, &passwordEncrypted);
+
+    //     l = hash_search(h, equal, &passwordEncrypted);
+    //     if (l != NULL)
+    //     {
+    //         print_key_char_soma(l, &k);
+    //     }
+
+    //     add_onfirst(&k, &maximo);
+    // }
+    // maximo = k;
+
     do
     {
         Key passwordEncrypted = {{0}};
@@ -66,9 +95,10 @@ void dec_symbol_table2(Key *encrypted, Key T[N])
 
         sub(encrypted, &passwordEncrypted);
 
-        l = hash_search(h, &passwordEncrypted);
+        l = hash_search(h, equal, &passwordEncrypted);
         if (l != NULL)
         {
+
             print_key_char_soma(l, &k);
         }
 
@@ -83,71 +113,75 @@ void dec_symbol_table2(Key *encrypted, Key T[N])
 // tst2 = hash(b);
 // hash(a) = hash(senha) - hash(b) - hash(c);
 // hash(b) = hash(senha) - hash(a) - hash(c);
-// hash(b) = hash(senha) - hash(c);
+// hash(d) = hash(senha) - hash(c);
+
+// hash(d) = hash(a) + hash(b)
+
+// hash(a) = hash(d) - hash(b);
 
 //hash(a) = hash(senha) - hash(senha) + hash(c) - hash(c)
 
-void dec_symbol_table(const Key *encrypted, Key T[N])
-{
+// void dec_symbol_table(const Key *encrypted, Key T[N])
+// {
 
-    Key lista[R][C];
+//     Key lista[R][C];
 
-    init_lista_key(lista, T); // R*C*N
+//     init_lista_key(lista, T); // R*C*N
 
-    Key k = {{0}};
-    TST *tst = TST_create();
+//     Key k = {{0}};
+//     TST *tst = TST_create();
 
-    int maximum = C / 2;
+//     int maximum = C / 2;
 
-    if (maximum > 4)
-    {
-        maximum = C - 4;
-    }
+//     if (maximum > 4)
+//     {
+//         maximum = C - 4;
+//     }
 
-    // dec_symbol_table2_rec(maximum, k, C, lista, k, &tst);
-    while (k.digit[maximum - 1] == 0)
-    {
-        Key passwordEncrypted = {{0}};
-        for (int p = 0; p < C; p++)
-        {
-            if (k.digit[p] != 0)
-                add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
-        }
+//     // dec_symbol_table2_rec(maximum, k, C, lista, k, &tst);
+//     while (k.digit[maximum - 1] == 0)
+//     {
+//         Key passwordEncrypted = {{0}};
+//         for (int p = 0; p < C; p++)
+//         {
+//             if (k.digit[p] != 0)
+//                 add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
+//         }
 
-        tst = TST_insert(tst, &passwordEncrypted, &k);
-        add1(&k);
-    }
+//         tst = TST_insert(tst, &passwordEncrypted, &k);
+//         add1(&k);
+//     }
 
-    List *l = TST_search(tst, encrypted);
+//     List *l = TST_search(tst, encrypted);
 
-    Key zero = {{0}};
-    if (l != NULL)
-        list_iterate(l, print_key_char_soma, &zero);
+//     Key zero = {{0}};
+//     if (l != NULL)
+//         list_iterate(l, print_key_char_soma, &zero);
 
-    Key atual = k;
+//     Key atual = k;
 
-    do
-    {
-        Key passwordEncrypted = {{0}};
-        for (int p = 0; p < C; p++)
-        {
-            if (k.digit[p] != 0)
-                add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
-        }
+//     do
+//     {
+//         Key passwordEncrypted = {{0}};
+//         for (int p = 0; p < C; p++)
+//         {
+//             if (k.digit[p] != 0)
+//                 add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
+//         }
 
-        sub(encrypted, &passwordEncrypted);
+//         sub(encrypted, &passwordEncrypted);
 
-        l = TST_search(tst, &passwordEncrypted);
-        if (l != NULL)
-        {
-            list_iterate(l, print_key_char_soma, &k);
-            print_key(&passwordEncrypted);
-            printf("\n");
-        }
-        add_onfirst(&k, &atual);
-    } while (!equal(&zero, &k));
-    TST_destroy(tst);
-}
+//         l = TST_search(tst, &passwordEncrypted);
+//         if (l != NULL)
+//         {
+//             list_iterate(l, print_key_char_soma, &k);
+//             print_key(&passwordEncrypted);
+//             printf("\n");
+//         }
+//         add_onfirst(&k, &atual);
+//     } while (!equal(&zero, &k));
+//     TST_destroy(tst);
+// }
 
 int main(int argc, char *argv[])
 {

@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "key.h"
-
+#include <string.h>
 
 int main(int argc, char *argv[])
 {
@@ -41,14 +41,27 @@ int main(int argc, char *argv[])
         T[i] = init_key(buffer);
     }
 
-    // Calcula a soma de subconjunto.
-    encrypted = subset_sum(password, T);
+    int j = 0;
+    while (scanf("%s", buffer) != EOF)
+    {
+        Key local = init_key(buffer);
+        // Calcula a soma de subconjunto.
+        encrypted = subset_sum(local, T);
 
-    // Exibe o resultado.
-    printf("\n   ");
-    print_key(&encrypted);
-    printf("\n");
+        if (equal(&encrypted, &password))
+        {
+            printf("%d\n", j);
+            print_key(&local);
+            print_key(&encrypted);
+            printf("\n");
+            j++;
+        }
+    }
 
+    // // Exibe o resultado.
+    // printf("\n   ");
+    // print_key(&encrypted);
+    // printf("\n");
 
     return 0;
 }

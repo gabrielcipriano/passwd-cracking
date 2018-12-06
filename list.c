@@ -3,7 +3,6 @@
 
 #include "list.h"
 
-
 /*Estrutura da Lista. Possui ponteiro para a primeira posição*/
 // struct list
 // {
@@ -16,18 +15,20 @@ List *list_init()
     return NULL;
 }
 /*Inicializa o nó, alocando memória e inicializando os ponteiros*/
-List *node_init(const Value *k)
+List *node_init(Value *v, Key *k)
 {
     List *n = malloc(sizeof(*n));
-    n->k = *k;
+    n->v = v;
+    n->k = k;
+
     n->next = NULL;
     return n;
 }
 
 /*Insere na lista*/
-List *list_insere(List *list, const Value *k)
+List *list_insere(List *list, Value *v, Key *k)
 {
-    List *n = node_init(k);
+    List *n = node_init(v, k);
     if (list == NULL)
     {
         list = n;
@@ -50,10 +51,22 @@ void list_free(List *l)
         while (atual != NULL)
         {
             next = atual->next;
+            free(atual->k);
+            free(atual->v);
             free(atual);
             atual = next;
         }
     }
+}
+
+Value *list_search(List *l, bool (*fn)(const Key *, const Key *), Key *key)
+{
+    for (List *n = l; n != NULL; n = n->next)
+    {
+        if (fn((n->k), key))
+            return (n->v);
+    }
+    return NULL;
 }
 
 #include <stdio.h>
@@ -65,6 +78,6 @@ void list_iterate(List *l, void (*visit)(Value *, Value *), Value *opt)
     {
         printf("%d   ", i);
         i++;
-        visit(&(n->k), opt);
+        visit((n->v), opt);
     }
 }

@@ -53,7 +53,7 @@ TST *rec_insert(TST *t, const Key *key, const Value *val, int d)
     else
     {
         // t->val = *val;
-        t->val = list_insere(t->val, val);
+        t->val = list_insere(t->val, val, key);
     }
     return t;
 }

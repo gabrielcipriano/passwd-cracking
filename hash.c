@@ -4,7 +4,7 @@
 struct hash_table
 {
   unsigned long tam;
-  Tree **hash;
+  List **hash;
 };
 
 Hash_table *hash_init(unsigned long tam)
@@ -14,7 +14,7 @@ Hash_table *hash_init(unsigned long tam)
   h->hash = malloc(sizeof(*(h->hash)) * tam);
   for (int i = 0; i < h->tam; i++)
   {
-    h->hash[i] = tree_init();
+    h->hash[i] = list_init();
   }
   return h;
 }
@@ -33,7 +33,7 @@ void hash_insert(Hash_table *h, Key *k, Value *v)
 {
   unsigned long hash = horner(k, h->tam);
 
-  h->hash[hash] = tree_insert(h->hash[hash], k, v);
+  h->hash[hash] = list_insere(h->hash[hash], v, k);
   // if (hash == 90483)
   // {
   //   Key teste = init_key((unsigned char *)"wlswlca5");
@@ -47,11 +47,11 @@ void hash_insert(Hash_table *h, Key *k, Value *v)
   // }
 }
 
-Value *hash_search(Hash_table *h, Key *k)
+Value *hash_search(Hash_table *h, bool (*fn)(const Key *, const Key *), Key *k)
 {
   unsigned long hash = horner(k, h->tam);
 
-  Value *l = tree_search(h->hash[hash], k);
+  Value *v = list_search(h->hash[hash], fn, k);
 
   // {
   //   if (hash == 90483)
@@ -65,7 +65,7 @@ Value *hash_search(Hash_table *h, Key *k)
   //     }
   //   }
   // }
-  return l;
+  return v;
 }
 
 void hash_destroy(Hash_table *h)
@@ -74,7 +74,7 @@ void hash_destroy(Hash_table *h)
   {
     for (unsigned long i = 0; i < h->tam; i++)
     {
-      delete_tree(h->hash[i]);
+      list_free(h->hash[i]);
     }
     free(h->hash);
     free(h);

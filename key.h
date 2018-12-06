@@ -4,7 +4,7 @@
 #ifndef KEY_H
 #define KEY_H
 
-#define C 12        // Número de caracteres na senha.
+#define C 10       // Número de caracteres na senha.
 #define B 5        // Número de bits por caractere.
 #define R (1 << B) // Tamanho do alfabeto (sempre = 32).
 #define N (B * C)  // Número de bits por senha.
@@ -24,6 +24,7 @@ typedef Key Value;
 // Inicializa e retorna uma chave a partir do vetor de char dado.
 // Exemplo: s = "abcdwxyz"  =>  k = 0 1 2 3 22 23 24 25
 Key init_key(unsigned char s[]);
+Key *init_key_ptr(Key *s);
 
 // Exibe a chave 'k' em stdout em três formatos: chars, ints (base R) e binário.
 void print_key(Key *k);

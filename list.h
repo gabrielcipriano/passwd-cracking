@@ -6,7 +6,8 @@
  */
 struct list
 {
-    Value k;
+    Value *v;
+    Key *k;
     struct list *next;
 };
 
@@ -16,13 +17,15 @@ typedef struct list List;
 List *list_init();
 
 // Insere na lista
-List *list_insere(List *list, const Value *k);
+List *list_insere(List *list, Value *v, Key *k);
 
 // Libera a lista
 void list_free(List *l);
 
-// itera pela lista
+// Pesquisa a chave na lista
+Value *list_search(List *l, bool (*fn)(const Key *, const Key *), Key *key);
 
+// itera pela lista
 void list_iterate(List *l, void (*visit)(Value *, Value *), Value *opt);
 
 #endif

@@ -29,6 +29,22 @@ Key init_key(unsigned char s[])
     return k;
 }
 
+Key *init_key_ptr(Key *s)
+{
+    // Converte cada char em um int no intervalo 0-31.
+    Key *k = malloc(sizeof(*k));
+
+    for (int i = 0; i < C; i++)
+    {
+        k->digit[i] = s->digit[i];
+    }
+    // Note que não há problema de retornar uma variável local aqui porque
+    // a semântica do C para variáveis do tipo struct (não struct*) é fazer
+    // uma cópia da struct inteira. Isso pode parecer ineficiente mas lembre
+    // que o vetor da struct de chave é muito pequeno.
+    return k;
+}
+
 // Exibe a chave 'k' em stdout em três formatos: chars, ints (base R) e binário.
 void print_key(Key *k)
 {
