@@ -11,6 +11,15 @@
 #include "list.1.h"
 #include "tree.h"
 #include "hash.h"
+
+
+struct teste{
+    Key_custom i;
+    struct teste* next;
+};
+
+typedef struct teste Teste;
+
 // Lista todas as possíveis senhas com um algoritmo de força bruta
 void dec_forca_bruta(const Key *encrypted, Key T[N]) // ((R^C) * (B*C² + 2C)
 {
@@ -50,32 +59,52 @@ void dec_symbol_table2(Key *encrypted, Key T[N])
     //     tam = pow(R, maximum) / 4;
     // }
 
-    Key_custom zero = {{0}};
-    Key_custom k = {{0}};
+    Key_custom *zero = malloc(sizeof(*zero));
+    Key_custom *k = malloc(sizeof(*k));
+    Key *passwordEncrypted = malloc(sizeof(*passwordEncrypted));
+    for (int i = 0; i < C_CUSTOM; i++)
+    {
+        zero->digit[i] = 0;
+        k->digit[i] = 0;
+    }
     Hash_table *h = hash_init(tam);
     do
     {
-        Key passwordEncrypted = {{0}}; //subset_sum_custom(&k, lista);
+        for (int i = 0; i < C; i++)
+        {
+            passwordEncrypted->digit[i] = 0;
+        }
         for (int p = 0; p < C_CUSTOM; p++)
         {
-            if (k.digit[p] != 0)
-                add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p + (1 * C_CUSTOM)]));
+            if (k->digit[p] != 0)
+                add_onfirst(passwordEncrypted, &(lista[k->digit[p]][p + (1 * C_CUSTOM)]));
         }
-        Key_custom *k_ptr = &k;
-        Key *password_ptr = &passwordEncrypted; //init_key_ptr(&passwordEncrypted);
+        // Key_custom *k_ptr = &k;
+        //Key *password_ptr = &passwordEncrypted; //init_key_ptr(&passwordEncrypted);
         // print_key_custom(k_ptr);
         // print_key(password_ptr);
         // sleep(1);
-        hash_insert(h, password_ptr, k_ptr);
-        add1_custom(&k);
-    } while (!equal_custom(&k, &zero));
+        hash_insert(h, passwordEncrypted, k);
+        add1_custom(k);
+    } while (!equal_custom(k, zero));
 
     printf("hash feita\n");
 
-    Item *l = hash_search(h, equal, encrypted);
+    List *l = hash_search(h, equal, encrypted);
 
     if (l != NULL)
-        print_key_char_soma_custom(&zero, &(l->v));
+    {
+        for (l = l; l != NULL; l = l->next)
+        {
+            Key t = add_custom(zero, &(l->v));
+            Key pass = subset_sum_custom(&t, lista);
+            if (equal(&pass, encrypted))
+            {
+                print_key_char(&t);
+            }
+        }
+        // print_key_char_soma_custom(zero, &(l->v));
+    }
     // list_iterate(l, print_key_char_soma, &zero);
 
     // Hash_table *h2 = hash_init(tam);
@@ -102,28 +131,45 @@ void dec_symbol_table2(Key *encrypted, Key T[N])
 
     //     add_onfirst(&k, &maximo);
     // }
-
-    k = zero;
+    for (int i = 0; i < C_CUSTOM; i++)
+    {
+        k->digit[i] = 0;
+    }
     do
     {
-        Key passwordEncrypted = {{0}};
+        for (int i = 0; i < C; i++)
+        {
+            passwordEncrypted->digit[i] = 0;
+        }
         for (int p = 0; p < C_CUSTOM; p++)
         {
-            if (k.digit[p] != 0)
-                add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
+            if (k->digit[p] != 0)
+                add_onfirst(passwordEncrypted, &(lista[k->digit[p]][p]));
         }
 
-        sub(encrypted, &passwordEncrypted);
+        sub(encrypted, passwordEncrypted);
 
-        l = hash_search(h, equal, &passwordEncrypted);
+        l = hash_search(h, equal, passwordEncrypted);
         if (l != NULL)
         {
-            print_key_char_soma_custom(&k, &(l->v));
+            for (l = l; l != NULL; l = l->next)
+            {
+                Key t = add_custom(k, &(l->v));
+                Key pass = subset_sum_custom(&t, lista);
+                if (equal(&pass, encrypted))
+                {
+                    print_key_char(&t);
+                }
+            }
+            // print_key_char_soma_custom(k, &(l->v));
         }
 
-        add1_custom(&k);
-    } while (!equal_custom(&zero, &k));
+        add1_custom(k);
+    } while (!equal_custom(zero, k));
     sleep(3);
+    free(k);
+    free(zero);
+    free(passwordEncrypted);
     hash_destroy(h);
 }
 
@@ -212,6 +258,8 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Usage: ./decrypt [encrypted] < [table.txt]\n");
         exit(EXIT_FAILURE);
     }
+
+    printf("with key: %lu, without key: %lu\n", sizeof(List), sizeof(Teste));
 
     encrypted = init_key((unsigned char *)argv[1]);
     // Exibe a senha encriptada.

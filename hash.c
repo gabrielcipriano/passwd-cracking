@@ -47,11 +47,11 @@ void hash_insert(Hash_table *h, Key *k, Key_custom *v)
   // }
 }
 
-Item *hash_search(Hash_table *h, bool (*fn)(const Key *, const Key *), Key *k)
+List *hash_search(Hash_table *h, bool (*fn)(const Key *, const Key *), Key *k)
 {
   unsigned long hash = horner(k, h->tam);
 
-  Item *i = list_search(h->hash[hash], fn, k);
+  // Item *i = list_search(h->hash[hash], fn, k);
 
   // {
   //   if (hash == 90483)
@@ -65,7 +65,8 @@ Item *hash_search(Hash_table *h, bool (*fn)(const Key *, const Key *), Key *k)
   //     }
   //   }
   // }
-  return i;
+  // return i;
+  return h->hash[hash];
 }
 
 void hash_destroy(Hash_table *h)
