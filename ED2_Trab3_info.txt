@@ -42,8 +42,8 @@ e da senha encontrada no hash.
  *  Descreva a implementação da tabela de símbolos que você utilizou em
  *  decrypt.c .
  *****************************************************************************/
-Uma Hash Table (Separate Chaining) no qual cada uma das posições é uma BST, 
-na qual a key é a chave criptografada e o value é a chave.
+Uma Hash Table (Separate Chaining) com lista encadeada, 
+na qual cada nó é um par chave-valor.
 
 /******************************************************************************
  *  Liste abaixo as versões não criptografadas das senhas fornecidas na
