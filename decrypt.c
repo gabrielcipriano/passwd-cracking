@@ -67,7 +67,7 @@ void hash_populate_rec(Key_custom prefix, Key sum_anterior, Key lista[R][C], Has
     {
         prefix.digit[pos - 1] = i;
 
-        Key novo_key = add(&sum_anterior, &(lista[i][pos - 1]));
+        Key novo_key = add(&sum_anterior, &(lista[i][(pos - 1) + (1 * C_CUSTOM)]));
 
         hash_populate_rec(prefix, novo_key, lista, hash, pos - 1);
     }
