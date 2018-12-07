@@ -20,6 +20,7 @@ typedef struct
     unsigned char digit[C];
 } Key;
 
+// Estrutura para guardar metade de uma key
 typedef struct
 {
     unsigned char digit[C_CUSTOM];
@@ -46,7 +47,6 @@ void print_key_custom(Key_custom *k);
 
 // Exibe a chave 'k' em stdout somente no formato de chars.
 void print_key_char(Key *k);
-
 void print_key_char_soma(Key *a, Key *b);
 void print_key_char_soma_custom(Key_custom *a, Key_custom *b);
 
@@ -60,13 +60,13 @@ Key add_custom(Key_custom *a, Key_custom *b);
 void add1(Key *a);
 void add1_custom(Key_custom *a);
 void add_onfirst(Key *a, const Key *b);
+
+// Retorna a - b (mod 2^N)
 void sub(const Key *a, Key *b);
 
 // Verifica que duas senhas são iguais
 bool equal(const Key *a, const Key *b);
 bool equal_custom(const Key_custom *a, const Key_custom *b);
-
-int compare(const Key *a, const Key *b);
 
 // Soma (módulo 2^N) e retorna o subconjunto dos inteiros T[i] que
 // são indexados pelos bits de k.

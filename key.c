@@ -29,29 +29,6 @@ Key init_key(unsigned char s[])
     return k;
 }
 
-// Copia s para k
-Key *init_key_ptr(Key *s)
-{
-    Key *k = malloc(sizeof(*k));
-
-    for (int i = 0; i < C; i++)
-    {
-        k->digit[i] = s->digit[i];
-    }
-    return k;
-}
-
-// Copia s para k
-Key_custom *init_key_custom_ptr(Key_custom *s)
-{
-    Key_custom *k = malloc(sizeof(*k));
-
-    for (int i = 0; i < C_CUSTOM; i++)
-    {
-        k->digit[i] = s->digit[i];
-    }
-    return k;
-}
 // Exibe a chave 'k' em stdout em três formatos: chars, ints (base R) e binário.
 void print_key(Key *k)
 {
@@ -72,21 +49,6 @@ void print_key(Key *k)
     printf("\n");
 }
 
-void print_key_custom(Key_custom *k)
-{
-
-    for (int i = 0; i < C_CUSTOM; i++)
-    {
-        printf("%c", ALPHABET[(unsigned char)(k->digit[i])]);
-    }
-    printf("  ");
-    for (int i = 0; i < C_CUSTOM; i++)
-    {
-        printf("%2d ", k->digit[i]);
-    }
-
-    printf("\n");
-}
 // Exibe a chave 'k' em stdout somente no formato de chars.
 void print_key_char(Key *k)
 {
@@ -124,6 +86,8 @@ int bit(Key *k, int i)
 {
     return (k->digit[i / B] >> (B - 1 - i % B)) & 1;
 }
+
+// Retorna o i-ésimo bit da letra k
 int bit_l(unsigned char k, int i)
 {
     return (k >> (B - 1 - i % B)) & 1;
@@ -167,6 +131,7 @@ Key add_custom(Key_custom *a, Key_custom *b) //C
     return c;
 }
 
+// Adiciona o conteudo do segundo no primeiro
 void add_onfirst(Key *a, const Key *b)
 {
     int carry = 0;
@@ -178,14 +143,13 @@ void add_onfirst(Key *a, const Key *b)
     }
 }
 
+
+// Subtrai o segundo do primeiro e salva o resultado no segundo
 void sub(const Key *a, Key *b)
 {
 
     int carry = 0;
 
-    // if lhs >= rhs the following will clearly work
-    // if lhs < rhs we will have carry == -1 after the for loop
-    // but this is ok since we are working mod 2^N
     for (int i = C - 1; i >= 0; --i)
     {
         int sub = a->digit[i] - b->digit[i] + carry;

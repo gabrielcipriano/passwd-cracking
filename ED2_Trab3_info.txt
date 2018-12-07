@@ -6,7 +6,7 @@
 Nome 1: 
 Nome 2:
 SO utilizado: Bash on Ubuntu 16.04 - Windows 10 1709
-Versão do compilador utilizado: gcc version 7.3.0
+Versão do compilador utilizado: gcc version 5.4.0
 Editor(es) de código utilizado(s): Visual Studio Code 
 Número de horas gastas para fazer o trabalho (aproximado): 50
 
@@ -42,8 +42,12 @@ e da senha encontrada no hash.
  *  Descreva a implementação da tabela de símbolos que você utilizou em
  *  decrypt.c .
  *****************************************************************************/
-Uma Hash Table (Separate Chaining) com lista encadeada, 
-na qual cada nó é um par chave-valor.
+Uma Hash Table (Separate Chaining) com lista encadeada, na qual cada nó é um 
+par chave-valor. Para economizar memória colocamos uma chave custom que tem 
+metade do tamanho da chave original, por esse motivo a solução só funciona
+em chaves de tamanho par, ou 5 que é um numero pequeno o suficiente para usar
+força bruta. Para numeros impar de char, seria necessário retirar a simetria 
+do calculo, assim tendo que guardar as chaves completas.
 
 /******************************************************************************
  *  Liste abaixo as versões não criptografadas das senhas fornecidas na
@@ -85,7 +89,8 @@ Tamanho    Tempo (segundos)    Memória (bytes)
  8         1.328                     35651584
 10         62.156                  1140850688
 12         13 horas                3288334336 
-(arvore feita com a permutação de 5 digitos, com permutação de 6 digitos acontece segfault)
+(arvore feita com a permutação de 5 digitos, com permutação de 6 digitos acontece segfault, 
+provavelmente causada por stack overflow, não foi usada a estrutura custom para esse teste)
 
 /******************************************************************************
  *  Quantas operações brute.c faz sobre uma senha com N bits?
@@ -102,7 +107,8 @@ decrypt.c faz(C^2) operações sobre cada senha para gerar a senha e comparar el
  *****************************************************************************/
 Uso de RAM na tabela de simbolos. Começamos usando uma TST mas a quantidade de 
 memória era muito grande. 
-Mudamos para uma Hash Table (separate chaining) com uma lista encadeada simples.
+Mudamos para uma Hash Table (separate chaining) com uma lista encadeada simples
+e assim consegumos reduzir bastante o consumo de memória.
 
 /******************************************************************************
  *  Deixe qualquer outro comentário aqui. Fique à vontade para dar um feedback
