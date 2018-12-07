@@ -14,10 +14,10 @@ List *list_init()
 List *node_init(Key_custom *v, Key *k)
 {
     List *n = malloc(sizeof(*n));
-    n->v = *v;
+    // n->v = *v;
     // n->k = *k;
-    // n->i.v = *v;
-    // n->i.k = *k;
+    n->i.v = *v;
+    n->i.k = *k;
 
     n->next = NULL;
     return n;
@@ -59,11 +59,11 @@ void list_free(List *l)
 
 Item *list_search(List *l, bool (*fn)(const Key *, const Key *), Key *key)
 {
-    // for (List *n = l; n != NULL; n = n->next)
-    // {
-    //     if (fn(&(n->i.k), key))
-    //         return &(n->i);
-    // }
+    for (List *n = l; n != NULL; n = n->next)
+    {
+        if (fn(&(n->i.k), key))
+            return &(n->i);
+    }
     return NULL;
 }
 

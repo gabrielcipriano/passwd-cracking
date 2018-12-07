@@ -12,13 +12,35 @@
 #include "tree.h"
 #include "hash.h"
 
-
-struct teste{
+struct teste
+{
     Key_custom i;
-    struct teste* next;
+    struct teste *next;
 };
 
 typedef struct teste Teste;
+
+void dec_forca_bruta_rec(const Key *encrypted, Key prefix, Key lista[R][C], Key sum_anterior, int pos)
+{
+    if (pos == 0)
+    {
+
+        if (equal(&sum_anterior, encrypted))
+        {
+            print_key_char(&prefix);
+        }
+        return;
+    }
+
+    for (int i = 0; i < R; i++)
+    {
+        prefix.digit[pos - 1] = i;
+
+        Key novo_key = add(&sum_anterior, &(lista[i][pos - 1]));
+
+        dec_forca_bruta_rec(encrypted, prefix, lista, novo_key, pos - 1);
+    }
+}
 
 // Lista todas as possíveis senhas com um algoritmo de força bruta
 void dec_forca_bruta(const Key *encrypted, Key T[N]) // ((R^C) * (B*C² + 2C)
@@ -29,16 +51,26 @@ void dec_forca_bruta(const Key *encrypted, Key T[N]) // ((R^C) * (B*C² + 2C)
     Key zero = {{0}};
     Key lista[R][C];
     init_lista_key(lista, T);
-    do
-    {
-        Key passwordEncrypted = subset_sum_custom(&k, lista);
 
-        if (equal(encrypted, &passwordEncrypted)) //C obrigatorio
-        {
-            print_key_char(&k);
-        }
-        add1(&k);                //C
-    } while (!equal(&k, &zero)); //C
+    dec_forca_bruta_rec(encrypted, k, lista, zero, C);
+}
+
+void hash_populate_rec(Key_custom prefix, Key sum_anterior, Key lista[R][C], Hash_table *hash, int pos)
+{
+    if (pos == 0)
+    {
+        hash_insert(hash, &sum_anterior, &prefix);
+        return;
+    }
+
+    for (int i = 0; i < R; i++)
+    {
+        prefix.digit[pos - 1] = i;
+
+        Key novo_key = add(&sum_anterior, &(lista[i][pos - 1]));
+
+        hash_populate_rec(prefix, novo_key, lista, hash, pos - 1);
+    }
 }
 
 void dec_symbol_table2(Key *encrypted, Key T[N])
@@ -47,94 +79,44 @@ void dec_symbol_table2(Key *encrypted, Key T[N])
 
     init_lista_key(lista, T); // R*C*N
 
-    // int maximum = C / 2;
-    unsigned long tam = pow(R, C_CUSTOM) / 4;
-    // if (maximum > 5)
-    // {
-    //     tam = pow(R, 5) / 4;
-    //     maximum = C - 5;
-    // }
-    // else
-    // {
-    //     tam = pow(R, maximum) / 4;
-    // }
-
-    Key_custom *zero = malloc(sizeof(*zero));
-    Key_custom *k = malloc(sizeof(*k));
+    Key_custom zero = {{0}};
+    Key_custom k = {{0}};
     Key *passwordEncrypted = malloc(sizeof(*passwordEncrypted));
-    for (int i = 0; i < C_CUSTOM; i++)
-    {
-        zero->digit[i] = 0;
-        k->digit[i] = 0;
-    }
+
+    unsigned long tam = pow(R, C_CUSTOM) / 4;
     Hash_table *h = hash_init(tam);
-    do
-    {
-        for (int i = 0; i < C; i++)
-        {
-            passwordEncrypted->digit[i] = 0;
-        }
-        for (int p = 0; p < C_CUSTOM; p++)
-        {
-            if (k->digit[p] != 0)
-                add_onfirst(passwordEncrypted, &(lista[k->digit[p]][p + (1 * C_CUSTOM)]));
-        }
-        // Key_custom *k_ptr = &k;
-        //Key *password_ptr = &passwordEncrypted; //init_key_ptr(&passwordEncrypted);
-        // print_key_custom(k_ptr);
-        // print_key(password_ptr);
-        // sleep(1);
-        hash_insert(h, passwordEncrypted, k);
-        add1_custom(k);
-    } while (!equal_custom(k, zero));
+    Key zeroo = {{0}};
+    hash_populate_rec(k, zeroo, lista, h, C_CUSTOM);
+    // do
+    // {
+    //     for (int i = 0; i < C; i++)
+    //     {
+    //         passwordEncrypted->digit[i] = 0;
+    //     }
+    //     for (int p = 0; p < C_CUSTOM; p++)
+    //     {
+    //         if (k.digit[p] != 0)
+    //             add_onfirst(passwordEncrypted, &(lista[k.digit[p]][p + (1 * C_CUSTOM)]));
+    //     }
+
+    //     // Key_custom* key_ptr = init_key_custom_ptr(k);
+    //     // Key* pass_ptr = init_key_ptr(passwordEncrypted);
+
+    //     hash_insert(h, passwordEncrypted, &k);
+    //     add1_custom(&k);
+    // } while (!equal_custom(&k, &zero));
 
     printf("hash feita\n");
 
-    List *l = hash_search(h, equal, encrypted);
+    Item *l = hash_search(h, equal, encrypted);
 
     if (l != NULL)
     {
-        for (l = l; l != NULL; l = l->next)
-        {
-            Key t = add_custom(zero, &(l->v));
-            Key pass = subset_sum_custom(&t, lista);
-            if (equal(&pass, encrypted))
-            {
-                print_key_char(&t);
-            }
-        }
-        // print_key_char_soma_custom(zero, &(l->v));
+        print_key_char_soma_custom(&zero, &(l->v));
     }
-    // list_iterate(l, print_key_char_soma, &zero);
 
-    // Hash_table *h2 = hash_init(tam);
+    k = zero;
 
-    // while (k.digit[C - 6 - 1] == 0)
-    // {
-    //     Key passwordEncrypted = subset_sum_custom(&k, lista);
-    //     // for (int p = 0; p < C; p++)
-    //     // {
-    //     //     if (k.digit[p] != 0)
-    //     //         add_onfirst(&passwordEncrypted, &(lista[k.digit[p]][p]));
-    //     // }
-    //     Key *k_ptr = &k;                        //init_key_ptr(&k);
-    //     Key *password_ptr = &passwordEncrypted; //init_key_ptr(&passwordEncrypted);
-
-    //     hash_insert(h2, password_ptr, k_ptr);
-    //     sub(encrypted, &passwordEncrypted);
-
-    //     l = hash_search(h, equal, &passwordEncrypted);
-    //     if (l != NULL)
-    //     {
-    //         print_key_char_soma(l, &k);
-    //     }
-
-    //     add_onfirst(&k, &maximo);
-    // }
-    for (int i = 0; i < C_CUSTOM; i++)
-    {
-        k->digit[i] = 0;
-    }
     do
     {
         for (int i = 0; i < C; i++)
@@ -143,8 +125,8 @@ void dec_symbol_table2(Key *encrypted, Key T[N])
         }
         for (int p = 0; p < C_CUSTOM; p++)
         {
-            if (k->digit[p] != 0)
-                add_onfirst(passwordEncrypted, &(lista[k->digit[p]][p]));
+            if (k.digit[p] != 0)
+                add_onfirst(passwordEncrypted, &(lista[k.digit[p]][p]));
         }
 
         sub(encrypted, passwordEncrypted);
@@ -152,23 +134,11 @@ void dec_symbol_table2(Key *encrypted, Key T[N])
         l = hash_search(h, equal, passwordEncrypted);
         if (l != NULL)
         {
-            for (l = l; l != NULL; l = l->next)
-            {
-                Key t = add_custom(k, &(l->v));
-                Key pass = subset_sum_custom(&t, lista);
-                if (equal(&pass, encrypted))
-                {
-                    print_key_char(&t);
-                }
-            }
-            // print_key_char_soma_custom(k, &(l->v));
+            print_key_char_soma_custom(&k, &(l->v));
         }
 
-        add1_custom(k);
-    } while (!equal_custom(zero, k));
-    sleep(3);
-    free(k);
-    free(zero);
+        add1_custom(&k);
+    } while (!equal_custom(&zero, &k));
     free(passwordEncrypted);
     hash_destroy(h);
 }
@@ -276,7 +246,7 @@ int main(int argc, char *argv[])
     }
     // Tabela de simbolos
     clock_t tic = clock();
-    if (C == 5)
+    if (C <= 5)
         dec_forca_bruta(&encrypted, T);
     else
         dec_symbol_table2(&encrypted, T);

@@ -2,22 +2,13 @@
 #ifndef LIST_HEADER_H_INCLUDED
 #define LIST_HEADER_H_INCLUDED
 
-/*Estrutura do item da lista encadeada.
- *Possui um Item e ponteiros para o próximo nó.
- */
-typedef struct
-{
-    Key k;
-    Key_custom v;
-} Item;
 
 /*Estrutura do Nó de lista encadeada.
- *Possui um Item e ponteiros para o próximo nó.
+ *Possui um Item e ponteiro para o próximo nó.
  */
 struct list
 {
-    // Item i;
-    Key_custom v;
+    Item i;
     struct list *next;
 };
 typedef struct list List;

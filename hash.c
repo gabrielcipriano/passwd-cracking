@@ -47,26 +47,13 @@ void hash_insert(Hash_table *h, Key *k, Key_custom *v)
   // }
 }
 
-List *hash_search(Hash_table *h, bool (*fn)(const Key *, const Key *), Key *k)
+Item *hash_search(Hash_table *h, bool (*fn)(const Key *, const Key *), Key *k)
 {
   unsigned long hash = horner(k, h->tam);
 
-  // Item *i = list_search(h->hash[hash], fn, k);
+  Item *i = list_search(h->hash[hash], fn, k);
 
-  // {
-  //   if (hash == 90483)
-  //   {
-  //     Key teste = init_key((unsigned char *)"wlswlca5");
-  //     if (equal(k, &teste))
-  //     {
-  //       printf("hash: %lu\n", hash);
-  //       Key zero = {{0}};
-  //       list_iterate(l, print_key_char_soma, &zero);
-  //     }
-  //   }
-  // }
-  // return i;
-  return h->hash[hash];
+  return i;
 }
 
 void hash_destroy(Hash_table *h)

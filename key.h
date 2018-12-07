@@ -25,12 +25,20 @@ typedef struct
     unsigned char digit[C_CUSTOM];
 } Key_custom;
 
+// Estrutura contendo um par chave-valor
+typedef struct
+{
+    Key k;
+    Key_custom v;
+} Item;
+
 typedef Key Value;
 
 // Inicializa e retorna uma chave a partir do vetor de char dado.
 // Exemplo: s = "abcdwxyz"  =>  k = 0 1 2 3 22 23 24 25
 Key init_key(unsigned char s[]);
 Key *init_key_ptr(Key *s);
+Key_custom *init_key_custom_ptr(Key_custom *s);
 
 // Exibe a chave 'k' em stdout em três formatos: chars, ints (base R) e binário.
 void print_key(Key *k);

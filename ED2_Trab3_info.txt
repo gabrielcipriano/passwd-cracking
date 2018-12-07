@@ -54,7 +54,7 @@ na qual a key é a chave criptografada e o value é a chave.
 8 caracteres         10 caracteres          12 caracteres
 ------------         -------------          -------------
 congrats             completely             emailwaynecs
-youfound             unbreakabl
+youfound             unbreakabl             sothatyoucan
 theright             cryptogram
 solution             ormaybenot
 
@@ -67,10 +67,10 @@ solution             ormaybenot
 
 Tamanho     Tempo (segundos)
 ----------------------------
- 4          0.109
- 5          5.359
- 6          231.828
- 8          6 dias* (o tempo aumenta em aproximadamente 45 vezes por char)
+ 4          0.078
+ 5          4.312
+ 6          47.922
+ 8          8 horas* (o tempo aumenta em aproximadamente 600 vezes a cada 2 char)
 
 /******************************************************************************
  *  Quanto tempo decrypt.c leva para quebrar as senhas de um dado tamanho?
@@ -84,7 +84,8 @@ Tamanho    Tempo (segundos)    Memória (bytes)
  6         0.031                      1258291
  8         1.328                     35651584
 10         62.156                  1140850688
-12         7 horas*               2214592512 (arvore feita com a permutação de 5 digitos, mais do que isso o swap reduz drasticamente a velocidade)
+12         13 horas                3288334336 
+(arvore feita com a permutação de 5 digitos, com permutação de 6 digitos acontece segfault)
 
 /******************************************************************************
  *  Quantas operações brute.c faz sobre uma senha com N bits?
@@ -99,7 +100,9 @@ decrypt.c faz(C^2) operações sobre cada senha para gerar a senha e comparar el
  *  Descreva qualquer problema grave que você encontrou ao desenvolver
  *  o trabalho.
  *****************************************************************************/
-
+Uso de RAM na tabela de simbolos. Começamos usando uma TST mas a quantidade de 
+memória era muito grande. 
+Mudamos para uma Hash Table (separate chaining) com uma lista encadeada simples.
 
 /******************************************************************************
  *  Deixe qualquer outro comentário aqui. Fique à vontade para dar um feedback
