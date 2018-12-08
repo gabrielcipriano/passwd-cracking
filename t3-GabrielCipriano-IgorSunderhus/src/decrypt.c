@@ -9,13 +9,6 @@
 #include "list.h"
 #include "hash.h"
 
-struct teste
-{
-    Key_custom i;
-    struct teste *next;
-};
-
-typedef struct teste Teste;
 
 void dec_forca_bruta_rec(const Key *encrypted, Key prefix, Key lista[R][C], Key sum_anterior, int pos)
 {
@@ -52,11 +45,11 @@ void dec_forca_bruta(const Key *encrypted, Key T[N]) // R*C^2*B + (R*(C+T(C-1)))
     dec_forca_bruta_rec(encrypted, k, lista, zero, C);
 }
 
-void hash_populate_rec(Key_custom prefix, Key sum_anterior, Key lista[R][C], Hash_table *hash, int pos)
-{//R*(C/2+T(C/2-1))
+void hash_populate_rec(Key_custom prefix, Key sum_anterior, Key lista[R][C], Hash_table *hash, int pos) //T(pos) = R*(C + T(pos-1)) + C
+{
     if (pos == 0)
     {
-        hash_insert(hash, &sum_anterior, &prefix);
+        hash_insert(hash, &sum_anterior, &prefix); // C
         return;
     }
 
@@ -64,13 +57,13 @@ void hash_populate_rec(Key_custom prefix, Key sum_anterior, Key lista[R][C], Has
     {
         prefix.digit[pos - 1] = i;
 
-        Key novo_key = add(&sum_anterior, &(lista[i][(pos - 1) + (1 * C_CUSTOM)]));
+        Key novo_key = add(&sum_anterior, &(lista[i][(pos - 1) + (1 * C_CUSTOM)])); // C
 
-        hash_populate_rec(prefix, novo_key, lista, hash, pos - 1);
+        hash_populate_rec(prefix, novo_key, lista, hash, pos - 1); 
     }
 }
 
-void dec_symbol_table2(Key *encrypted, Key T[N])
+void dec_symbol_table2(Key *encrypted, Key T[N]) //R*C*N + (R^C/2)/4 + T(C/2) + C + C + ((R^C/2)* C + C²/2 + C + C + C + C)
 {
     Key lista[R][C];
 
@@ -81,43 +74,45 @@ void dec_symbol_table2(Key *encrypted, Key T[N])
     Key *passwordEncrypted = malloc(sizeof(*passwordEncrypted));
 
     unsigned long tam = pow(R, C_CUSTOM) / 4;
-    Hash_table *h = hash_init(tam);
+    Hash_table *h = hash_init(tam); // (R^C/2)/4
     Key zeroo = {{0}};
-    hash_populate_rec(k, zeroo, lista, h, C_CUSTOM);
+    // Calcula R^C/2 combinações e coloca elas numa hash
+    hash_populate_rec(k, zeroo, lista, h, C_CUSTOM); // T(C/2)
 
     printf("hash feita\n");
 
-    Item *l = hash_search(h, equal, encrypted);
+    Item *l = hash_search(h, equal, encrypted); // C
 
     if (l != NULL)
     {
-        print_key_char_soma_custom(&zero, &(l->v));
+        print_key_char_soma_custom(&zero, &(l->v)); // C
     }
 
     k = zero;
 
-    do
+    // Como subset_sum(senha) = subset_sum(A) + subset_sum(B), calcula de B e procura em A a substração da senha com B
+    do //(R^C/2) * 
     {
-        for (int i = 0; i < C; i++)
+        for (int i = 0; i < C; i++) // C
         {
             passwordEncrypted->digit[i] = 0;
         }
-        for (int p = 0; p < C_CUSTOM; p++)
+        for (int p = 0; p < C_CUSTOM; p++) // C/2 * C
         {
             if (k.digit[p] != 0)
                 add_onfirst(passwordEncrypted, &(lista[k.digit[p]][p]));
         }
 
-        sub(encrypted, passwordEncrypted);
+        sub(encrypted, passwordEncrypted); // C
 
-        l = hash_search(h, equal, passwordEncrypted);
+        l = hash_search(h, equal, passwordEncrypted); // C
         if (l != NULL)
         {
-            print_key_char_soma_custom(&k, &(l->v));
+            print_key_char_soma_custom(&k, &(l->v)); // C
         }
 
-        add1_custom(&k);
-    } while (!equal_custom(&zero, &k));
+        add1_custom(&k); // C/2
+    } while (!equal_custom(&zero, &k)); // C/2
     free(passwordEncrypted);
     hash_destroy(h);
 }
@@ -150,6 +145,7 @@ int main(int argc, char *argv[])
     }
     // Tabela de simbolos
     clock_t tic = clock();
+    // menor do que 5 é rapido o suficiente usar a solução bruta e com numero impar não funciona por causa do C_custom = C/2
     if (C <= 5)
         dec_forca_bruta(&encrypted, T);
     else

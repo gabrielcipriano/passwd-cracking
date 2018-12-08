@@ -4,7 +4,7 @@
 #include <time.h>
 #include "key.h"
 
-void dec_forca_bruta_rec(const Key *encrypted, Key prefix, Key lista[R][C], Key sum_anterior, int pos)
+void dec_forca_bruta_rec(const Key *encrypted, Key prefix, Key lista[R][C], Key sum_anterior, int pos) // T(pos) = R*(C + T(pos-1)) + C
 {
     if (pos == 0)
     {
@@ -27,16 +27,16 @@ void dec_forca_bruta_rec(const Key *encrypted, Key prefix, Key lista[R][C], Key 
 }
 
 // Lista todas as possíveis senhas com um algoritmo de força bruta
-void dec_forca_bruta(const Key *encrypted, Key T[N]) // ((R^C) * (B*C² + 2C)
+void dec_forca_bruta(const Key *encrypted, Key T[N]) // R*N*C + T(C)
 {
     Key k = {{0}};
 
     // Quantidade de combinações
     Key zero = {{0}};
     Key lista[R][C];
-    init_lista_key(lista, T);
+    init_lista_key(lista, T); //R*N*C
 
-    dec_forca_bruta_rec(encrypted,k, lista, zero, C );
+    dec_forca_bruta_rec(encrypted,k, lista, zero, C ); //T(C)
 }
 
 int main(int argc, char *argv[])
