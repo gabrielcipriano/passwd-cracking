@@ -7,9 +7,6 @@
 
 #include "key.h"
 #include "list.h"
-#include "tst.h"
-#include "list.1.h"
-#include "tree.h"
 #include "hash.h"
 
 struct teste
@@ -43,7 +40,7 @@ void dec_forca_bruta_rec(const Key *encrypted, Key prefix, Key lista[R][C], Key 
 }
 
 // Lista todas as possíveis senhas com um algoritmo de força bruta
-void dec_forca_bruta(const Key *encrypted, Key T[N]) // ((R^C) * (B*C² + 2C)
+void dec_forca_bruta(const Key *encrypted, Key T[N]) // R*C^2*B + (R*(C+T(C-1)))
 {
     Key k = {{0}};
 
@@ -56,7 +53,7 @@ void dec_forca_bruta(const Key *encrypted, Key T[N]) // ((R^C) * (B*C² + 2C)
 }
 
 void hash_populate_rec(Key_custom prefix, Key sum_anterior, Key lista[R][C], Hash_table *hash, int pos)
-{
+{//R*(C/2+T(C/2-1))
     if (pos == 0)
     {
         hash_insert(hash, &sum_anterior, &prefix);

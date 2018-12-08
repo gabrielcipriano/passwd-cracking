@@ -3,9 +3,9 @@
  *  Password Cracking
  *****************************************************************************/
 
-Nome 1: 
-Nome 2:
-SO utilizado: Bash on Ubuntu 16.04 - Windows 10 1709
+Nome 1: Gabriel Ferrari Cipriano
+Nome 2: Igor Sunderhus
+SO utilizado: Bash on Ubuntu 16.04 - Windows 10 1709 - Manjaro 5.11.2 / Kernel 4.14.83-1
 Versão do compilador utilizado: gcc version 5.4.0
 Editor(es) de código utilizado(s): Visual Studio Code 
 Número de horas gastas para fazer o trabalho (aproximado): 50
@@ -32,11 +32,16 @@ compara com a senha passada e imprime a senha "descriptografada" se for igual
  *  (decrypt.c).
  *****************************************************************************/
 Coloca o valor relativo de cada caracter numa matriz RxC;
-Calcula todas as possibilidades dos 4 ultimos caracteres em uma Hash Table, 
-por exemplo, todas as senhas do formato aaaaxxxx em senhas de 8 digitos.
-No resto das possibilidades (senhas no formato xxxxaaaa) subtrai o candidato atual
+Para senhas de 6, 8 e 10 caracteres, calcula todas as possibilidades da última 
+metade dos caracteres em uma Hash Table, por exemplo, todas as senhas do formato 
+aaaaxxxx em senhas de 8 digitos.
+No restante das possibilidades (senhas no formato xxxxaaaa) subtrai o candidato atual
 da senha fornecida, o resultado procura na Hash, e imprime a soma do candidato atual
 e da senha encontrada no hash.
+Para decriptografia de senhas de 12 caracteres, o programa só funciona até certo 
+ponto, exibindo 1 ou 2 resultados, e consumindo cerca de 3gb, mas acaba por mostrar 
+uma mensagem de erro depois de algumas horas. Provavelmente por conta de problemas 
+de paginação e/ou stack.
 
 /******************************************************************************
  *  Descreva a implementação da tabela de símbolos que você utilizou em
@@ -98,15 +103,20 @@ provavelmente causada por stack overflow, não foi usada a estrutura custom para
  *  Utilize a notação de big-Oh nas suas respostas.
  *****************************************************************************/
 Dado que N é dado por C*B.
+A função init_lista_key, utilizada por ambos, tem custo O(R*B^2*C).
+
+Em brute.c, considerando T como a funcao recursiva responsável por iterar pelos 
+caracteres de maneira recursiva, mantendo a soma na stack, temos O(R*(C + T(C-1)).
+
 brute.c faz O(C(N-1)) operações sobre cada senha para gerar a senha e comparar ela com a cifra passada
-decrypt.c faz(C^2) operações sobre cada senha para gerar a senha e comparar ela com a cifra passada.
+decrypt.c faz O(C^2) operações sobre cada senha para gerar a senha e comparar ela com a cifra passada.
 
 /******************************************************************************
  *  Descreva qualquer problema grave que você encontrou ao desenvolver
  *  o trabalho.
  *****************************************************************************/
 Uso de RAM na tabela de simbolos. Começamos usando uma TST mas a quantidade de 
-memória era muito grande. 
+memória consumida era muito grande. Ficava na casa dos 10~15gb o decrypt de 10 chars,
 Mudamos para uma Hash Table (separate chaining) com uma lista encadeada simples
 e assim consegumos reduzir bastante o consumo de memória.
 

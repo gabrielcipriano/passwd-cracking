@@ -1,5 +1,4 @@
 #include "hash.h"
-#include "tree.h"
 
 struct hash_table
 {
