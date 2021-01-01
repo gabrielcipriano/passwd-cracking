@@ -1,4 +1,3 @@
 # Password Cracking
 
-Um programa para testar conhecimentos de otimização de complexidade assintótica.
-
+A program to test knowledge of optimization of asymptotic complexity.
